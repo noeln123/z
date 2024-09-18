@@ -20,8 +20,10 @@ def emt_required(f):
 @login_required
 @emt_required
 def emt_dashboard():
-    emergency_requests = EmergencyRequest.query.filter_by(status='Dispatched').all()
-    return render_template('emt_dashboard.html', emergency_requests=emergency_requests)
+    form = UpdateStatusForm()
+    statuses = ['Dispatched', 'On the way', 'Transporting']
+    emergency_requests = EmergencyRequest.query.filter(EmergencyRequest.status.in_(statuses)).all()
+    return render_template('emt_dashboard.html', emergency_requests=emergency_requests, form=form)
 
 @emt_bp.route('/patient_info/<int:request_id>')
 @login_required

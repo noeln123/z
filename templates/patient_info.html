@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Thông Tin Bệnh Nhân</h2>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Yêu Cầu ID: {{ emergency_request.id }}</h5>
+        <p class="card-text"><strong>Tên Bệnh Viện:</strong> {{ emergency_request.hospital_name }}</p>
+        <p class="card-text"><strong>Địa Chỉ Bệnh Viện:</strong> {{ emergency_request.hospital_address }}</p>
+        <p class="card-text"><strong>Số Điện Thoại:</strong> {{ emergency_request.user_phone }}</p>
+        <p class="card-text"><strong>Địa Chỉ Đón:</strong> {{ emergency_request.pickup_address }}</p>
+        <p class="card-text"><strong>Loại Yêu Cầu:</strong> {{ emergency_request.request_type }}</p>
+        <p class="card-text"><strong>Trạng Thái:</strong> 
+            {% if emergency_request.status == 'Pending' %}
+                <span class="badge bg-warning text-dark">Đang chờ</span>
+            {% elif emergency_request.status == 'Dispatched' %}
+                <span class="badge bg-info">Đang điều phối</span>
+            {% elif emergency_request.status == 'On the way' %}
+                <span class="badge bg-primary">Đang trên đường</span>
+            {% elif emergency_request.status == 'Arrived' %}
+                <span class="badge bg-success">Đã đến</span>
+            {% elif emergency_request.status == 'Transporting' %}
+                <span class="badge bg-secondary">Đang vận chuyển</span>
+            {% else %}
+                <span class="badge bg-dark">{{ emergency_request.status }}</span>
+            {% endif %}
+        </p>
+        <p class="card-text"><strong>Thông Tin Bệnh Nhân:</strong> {{ emergency_request.patient_info }}</p>
+        {% if emergency_request.ambulance %}
+            <p class="card-text"><strong>Xe Cứu Thương:</strong> {{ emergency_request.ambulance.ambulance_type }} ({{ emergency_request.ambulance.size }})</p>
+            <p class="card-text"><strong>Tài Xế:</strong> {{ emergency_request.ambulance.driver.name }}</p>
+        {% else %}
+            <p class="card-text"><strong>Xe Cứu Thương:</strong> <span class="text-muted">Chưa được chỉ định</span></p>
+        {% endif %}
+        <a href="{{ url_for('emt.emt_dashboard') }}" class="btn btn-secondary">Quay Lại Dashboard</a>
+    </div>
+</div>
+{% endblock %}

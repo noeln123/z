@@ -20,8 +20,38 @@ def admin_required(f):
 @login_required
 @admin_required
 def admin_dashboard():
-    emergency_requests = EmergencyRequest.query.all()
-    return render_template('admin_dashboard.html', emergency_requests=emergency_requests)
+    # Truy vấn dữ liệu tổng quan
+    total_ambulances = Ambulance.query.count()
+    total_drivers = Driver.query.count()
+    total_emergency_requests = EmergencyRequest.query.count()
+    
+    # Các yêu cầu khẩn cấp theo trạng thái
+    pending_requests = EmergencyRequest.query.filter_by(status='Pending').count()
+    dispatched_requests = EmergencyRequest.query.filter_by(status='Dispatched').count()
+    on_the_way_requests = EmergencyRequest.query.filter_by(status='On the way').count()
+    arrived_requests = EmergencyRequest.query.filter_by(status='Arrived').count()
+    transporting_requests = EmergencyRequest.query.filter_by(status='Transporting').count()
+    
+    # Truy vấn danh sách yêu cầu khẩn cấp gần đây
+    recent_requests = EmergencyRequest.query.order_by(EmergencyRequest.id.desc()).limit(10).all()
+    
+    # Truy vấn danh sách xe cứu thương đang hoạt động (join với EM có status 'Transporting', 'On the way', )
+    statuses = ['On the way', 'Transporting']
+    active_ambulances = Ambulance.query.join(EmergencyRequest).filter(EmergencyRequest.status.in_(statuses)).all()
+    
+    return render_template('admin_dashboard.html',
+                           total_ambulances=total_ambulances,
+                           total_drivers=total_drivers,
+                           total_emergency_requests=total_emergency_requests,
+                           pending_requests=pending_requests,
+                           dispatched_requests=dispatched_requests,
+                           on_the_way_requests=on_the_way_requests,
+                           arrived_requests=arrived_requests,
+                           transporting_requests=transporting_requests,
+                           recent_requests=recent_requests,
+                           active_ambulances=active_ambulances)
+
+
 
 @admin_bp.route('/manage_ambulances', methods=['GET', 'POST'])
 @login_required

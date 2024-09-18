@@ -1,36 +1,206 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Bảng điều khiển quản trị viên</h2>
-<h3>Yêu cầu khẩn cấp</h3>
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Tên bệnh viện</th>
-            <th>Địa chỉ</th>
-            <th>Số điện thoại</th>
-            <th>Địa chỉ đón</th>
-            <th>Loại</th>
-            <th>Trạng thái</th>
-            <th>Hành động</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for request in emergency_requests %}
-            <tr>
-                <td>{{ request.id }}</td>
-                <td>{{ request.hospital_name }}</td>
-                <td>{{ request.hospital_address }}</td>
-                <td>{{ request.user_phone }}</td>
-                <td>{{ request.pickup_address }}</td>
-                <td>{{ request.request_type }}</td>
-                <td>{{ request.status }}</td>
-                <td>
-                    <a href="{{ url_for('admin.dispatch_control', request_id=request.id) }}">Chỉ định</a>
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="container-fluid">
+    <h1 class="mb-4">Dashboard Quản Trị</h1>
+    
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <!-- Các Cards Tổng Quan -->
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-primary h-100">
+                <div class="card-body">
+                    <div class="card-title">Tổng Số Xe Cứu Thương</div>
+                    <h2 class="card-text">{{ total_ambulances }}</h2>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('admin.manage_ambulances') }}" class="text-white">Xem Chi Tiết</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-success h-100">
+                <div class="card-body">
+                    <div class="card-title">Tổng Số Tài Xế</div>
+                    <h2 class="card-text">{{ total_drivers }}</h2>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('admin.manage_drivers') }}" class="text-white">Xem Chi Tiết</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-warning h-100">
+                <div class="card-body">
+                    <div class="card-title">Tổng Số Yêu Cầu Khẩn Cấp</div>
+                    <h2 class="card-text">{{ total_emergency_requests }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-danger h-100">
+                <div class="card-body">
+                    <div class="card-title">Yêu Cầu Đang Vận Chuyển</div>
+                    <h2 class="card-text">{{ transporting_requests }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Danh Sách Yêu Cầu Khẩn Cấp Gần Đây -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Danh Sách Yêu Cầu Khẩn Cấp Gần Đây</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID Yêu Cầu</th>
+                            <th>Tên Bệnh Viện</th>
+                            <th>Địa Chỉ Bệnh Viện</th>
+                            <th>Số Điện Thoại</th>
+                            <th>Địa Chỉ Đón</th>
+                            <th>Loại Yêu Cầu</th>
+                            <th>Trạng Thái</th>
+                            <th>Xe Cứu Thương</th>
+                            <th>Vị Trí Xe</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request in recent_requests %}
+                        <tr>
+                            <td>{{ request.id }}</td>
+                            <td>{{ request.hospital_name }}</td>
+                            <td>{{ request.hospital_address }}</td>
+                            <td>{{ request.user_phone }}</td>
+                            <td>{{ request.pickup_address }}</td>
+                            <td>{{ request.request_type }}</td>
+                            <td>
+                                {% if request.status == 'Pending' %}
+                                    <span class="badge bg-warning text-dark">Đang chờ</span>
+                                {% elif request.status == 'Dispatched' %}
+                                    <span class="badge bg-info">Đang điều phối</span>
+                                {% elif request.status == 'On the way' %}
+                                    <span class="badge bg-primary">Đang trên đường</span>
+                                {% elif request.status == 'Arrived' %}
+                                    <span class="badge bg-success">Đã đến</span>
+                                {% elif request.status == 'Transporting' %}
+                                    <span class="badge bg-secondary">Đang vận chuyển</span>
+                                {% else %}
+                                    <span class="badge bg-dark">{{ request.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if request.ambulance %}
+                                    <strong>{{ request.ambulance.ambulance_type }}</strong><br>
+                                    {% if request.ambulance.driver %}
+                                        {{ request.ambulance.driver.name }}
+                                    {% else %}
+                                        <span class="text-muted">Chưa có tài xế</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted">Chưa được chỉ định</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if request.ambulance and request.ambulance.driver %}
+                                    {{ request.ambulance.driver.location }}
+                                    <!-- Bạn có thể thêm liên kết tới bản đồ hoặc tích hợp Google Maps/OpenStreetMap -->
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form action="{{ url_for('admin.dispatch_control', request_id=request.id) }}" method="GET" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-success">Điều Phối</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="10" class="text-center">Không có yêu cầu khẩn cấp nào.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Danh Sách Xe Cứu Thương Đang Hoạt Động -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Xe Cứu Thương Đang Hoạt Động</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID Xe</th>
+                            <th>Loại Xe</th>
+                            <th>Kích Cỡ</th>
+                            <th>Trang Thiết Bị</th>
+                            <th>Tài Xế</th>
+                            <th>Vị Trí Hiện Tại</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ambulance in active_ambulances %}
+                        <tr>
+                            <td>{{ ambulance.id }}</td>
+                            <td>{{ ambulance.ambulance_type }}</td>
+                            <td>{{ ambulance.size }}</td>
+                            <td>{{ ambulance.equipment }}</td>
+                            <td>
+                                {% if ambulance.driver %}
+                                    {{ ambulance.driver.name }}<br>
+                                    <small>{{ ambulance.driver.contact_info }}</small>
+                                {% else %}
+                                    <span class="text-muted">Chưa có tài xế</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if ambulance.driver and ambulance.driver.location %}
+                                    {{ ambulance.driver.location }}
+                                    <!-- Bạn có thể thêm liên kết tới bản đồ hoặc tích hợp Google Maps/OpenStreetMap -->
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('admin.edit_ambulance', ambulance_id=ambulance.id) }}" class="btn btn-sm btn-warning">Sửa</a>
+                                <form action="{{ url_for('admin.delete_ambulance', ambulance_id=ambulance.id) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa xe này?');">Xóa</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center">Không có xe cứu thương nào đang hoạt động.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bạn có thể thêm các phần khác như biểu đồ thống kê nếu cần -->
+</div>
 {% endblock %}
