@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Điều Phối Yêu Cầu Khẩn Cấp</h2>
+<p><strong>ID Yêu Cầu:</strong> {{ emergency_request.id }}</p>
+<p><strong>Tên Bệnh Viện:</strong> {{ emergency_request.hospital_name }}</p>
+<p><strong>Địa Chỉ Bệnh Viện:</strong> {{ emergency_request.hospital_address }}</p>
+<p><strong>Số Điện Thoại:</strong> {{ emergency_request.user_phone }}</p>
+<p><strong>Địa Chỉ Đón:</strong> {{ emergency_request.pickup_address }}</p>
+<p><strong>Loại Yêu Cầu:</strong> {{ emergency_request.request_type }}</p>
+<p><strong>Trạng Thái:</strong> {{ emergency_request.status }}</p>
+
+<form method="POST">
+    <label for="ambulance_id">Chọn Xe Cứu Thương:</label><br>
+    <select name="ambulance_id" id="ambulance_id" required>
+        {% for ambulance in ambulances %}
+            <option value="{{ ambulance.id }}">{{ ambulance.ambulance_type }} - {{ ambulance.driver.name }}</option>
+        {% endfor %}
+    </select><br><br>
+    <button type="submit">Chỉ Định Xe</button>
+</form>
+{% endblock %}

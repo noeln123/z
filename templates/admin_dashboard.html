@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Bảng điều khiển quản trị viên</h2>
+<h3>Yêu cầu khẩn cấp</h3>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên bệnh viện</th>
+            <th>Địa chỉ</th>
+            <th>Số điện thoại</th>
+            <th>Địa chỉ đón</th>
+            <th>Loại</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for request in emergency_requests %}
+            <tr>
+                <td>{{ request.id }}</td>
+                <td>{{ request.hospital_name }}</td>
+                <td>{{ request.hospital_address }}</td>
+                <td>{{ request.user_phone }}</td>
+                <td>{{ request.pickup_address }}</td>
+                <td>{{ request.request_type }}</td>
+                <td>{{ request.status }}</td>
+                <td>
+                    <a href="{{ url_for('admin.dispatch_control', request_id=request.id) }}">Chỉ định</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

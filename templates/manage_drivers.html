@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Quản lý tài xế</h2>
+<a href="{{ url_for('admin.add_driver') }}">Thêm tài xế mới</a>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên</th>
+            <th>Thông tin liên lạc</th>
+            <th>Vị trí</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for driver in drivers %}
+            <tr>
+                <td>{{ driver.id }}</td>
+                <td>{{ driver.name }}</td>
+                <td>{{ driver.contact_info }}</td>
+                <td>{{ driver.location }}</td>
+                <td>
+                    <a href="{{ url_for('admin.edit_driver', driver_id=driver.id) }}">Sửa</a>
+                    <form action="{{ url_for('admin.delete_driver', driver_id=driver.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" onclick="return confirm('Bạn có chắc chắn muốn xóa tài xế này?');">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

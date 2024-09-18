@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Theo Dõi Yêu Cầu Khẩn Cấp</h2>
+<div class="card mb-3">
+    <div class="card-header">
+        Thông Tin Yêu Cầu
+    </div>
+    <div class="card-body">
+        <p><strong>ID Yêu Cầu:</strong> {{ request.id }}</p>
+        <p><strong>Tên Bệnh Viện:</strong> {{ request.hospital_name }}</p>
+        <p><strong>Địa Chỉ Bệnh Viện:</strong> {{ request.hospital_address }}</p>
+        <p><strong>Số Điện Thoại:</strong> {{ request.user_phone }}</p>
+        <p><strong>Địa Chỉ Đón:</strong> {{ request.pickup_address }}</p>
+        <p><strong>Loại Yêu Cầu:</strong> {{ request.request_type }}</p>
+        <p><strong>Trạng Thái:</strong>
+            {% if request.status == 'Pending' %}
+                <span class="badge bg-warning text-dark">Đang chờ</span>
+            {% elif request.status == 'Dispatched' %}
+                <span class="badge bg-info">Đang điều phối</span>
+            {% elif request.status == 'On the way' %}
+                <span class="badge bg-primary">Đang trên đường</span>
+            {% elif request.status == 'Arrived' %}
+                <span class="badge bg-success">Đã đến</span>
+            {% elif request.status == 'Transporting' %}
+                <span class="badge bg-secondary">Đang vận chuyển</span>
+            {% else %}
+                <span class="badge bg-dark">{{ request.status }}</span>
+            {% endif %}
+        </p>
+        <p><strong>Xe Cứu Thương:</strong>
+            {% if ambulance %}
+                <strong>{{ ambulance.ambulance_type }}</strong> - {{ ambulance.driver.name }}
+            {% else %}
+                <span class="text-muted">Chưa được chỉ định</span>
+            {% endif %}
+        </p>
+        <p><strong>Vị Trí Xe:</strong>
+            {% if ambulance and ambulance.driver %}
+                {{ ambulance.driver.location }}
+                <!-- Tích hợp bản đồ thực tế nếu cần -->
+            {% else %}
+                N/A
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+{% if ambulance %}
+    <div class="mb-3">
+        <h4>Vị Trí Hiện Tại của Xe Cứu Thương</h4>
+        <!-- Tích hợp Google Maps hoặc OpenStreetMap tại đây -->
+        <div id="map" style="height: 400px;"></div>
+    </div>
+{% endif %}
+
+{% if ambulance and ambulance.driver %}
+    <!-- Sử dụng API của Google Maps để hiển thị bản đồ nếu có thông tin vị trí -->
+    <script>
+        function initMap() {
+            var location = {lat: 10.8231, lng: 106.6297}; // Thay bằng vị trí thực tế của xe
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: location
+            });
+            var marker = new google.maps.Marker({
+                position: location,
+                map: map,
+                title: 'Vị Trí Xe Cứu Thương'
+            });
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyATHmQqJ6F5zksA7XrL6xnX2PASTGLjYGo&callback=initMap">
+    </script>
+{% endif %}
+{% endblock %}

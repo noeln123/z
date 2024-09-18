@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Sửa Thông Tin Xe Cứu Thương</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.ambulance_type.label(class="form-label") }}
+        {{ form.ambulance_type(class="form-control") }}
+        {% for error in form.ambulance_type.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        {{ form.size.label(class="form-label") }}
+        {{ form.size(class="form-control") }}
+        {% for error in form.size.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        {{ form.equipment.label(class="form-label") }}
+        {{ form.equipment(class="form-control", rows="3") }}
+        {% for error in form.equipment.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        {{ form.driver_id.label(class="form-label") }}
+        {{ form.driver_id(class="form-control") }}
+        {% for error in form.driver_id.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <br>
+    <button type="submit" class="btn btn-primary">Cập Nhật</button>
+    <a href="{{ url_for('admin.manage_ambulances') }}" class="btn btn-secondary">Hủy</a>
+</form>
+{% endblock %}

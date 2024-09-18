@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Sửa Thông Tin Tài Xế</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.name.label(class="form-label") }}
+        {{ form.name(class="form-control", placeholder="Nhập tên tài xế") }}
+        {% for error in form.name.errors %}
+            <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        {{ form.contact_info.label(class="form-label") }}
+        {{ form.contact_info(class="form-control", placeholder="Nhập thông tin liên lạc") }}
+        {% for error in form.contact_info.errors %}
+            <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        {{ form.location.label(class="form-label") }}
+        {{ form.location(class="form-control", placeholder="Nhập vị trí hiện tại") }}
+        {% for error in form.location.errors %}
+            <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary">Cập Nhật</button>
+    <a href="{{ url_for('admin.manage_drivers') }}" class="btn btn-secondary">Hủy</a>
+</form>
+{% endblock %}

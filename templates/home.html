@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Trang chủ{% endblock %}
+
+{% block content %}
+<div class="jumbotron text-center bg-light p-5 rounded">
+    <h1 class="display-4">Chào mừng đến với Rapid Rescue</h1>
+    <p class="lead">Ứng dụng web giúp bạn nhanh chóng yêu cầu dịch vụ xe cứu thương, theo dõi vị trí xe cứu thương theo thời gian thực và cung cấp thông tin y tế cần thiết cho EMT.</p>
+    <hr class="my-4">
+    {% if not current_user.is_authenticated %}
+        <a class="btn btn-primary btn-lg" href="{{ url_for('user.register') }}" role="button">Đăng ký ngay</a>
+        <a class="btn btn-secondary btn-lg" href="{{ url_for('user.login') }}" role="button">Đăng nhập</a>
+    {% else %}
+        <a class="btn btn-primary btn-lg" href="{{ url_for('user.emergency_request') }}" role="button">Yêu cầu Khẩn Cấp</a>
+    {% endif %}
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card mb-4 shadow-sm">
+            <img src="{{ url_for('static', filename='images/track.png') }}" class="card-img-top" alt="Theo dõi xe cứu thương">
+            <div class="card-body">
+                <h5 class="card-title">Theo dõi Xe Cứu Thương</h5>
+                <p class="card-text">Giám sát vị trí xe cứu thương theo thời gian thực để đảm bảo sự đến kịp thời.</p>
+                <a href="{{ url_for('user.track_emergency', request_id=1) }}" class="btn btn-primary">Tìm hiểu thêm</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-4 shadow-sm">
+            <img src="{{ url_for('static', filename='images/medical_info.png') }}" class="card-img-top" alt="Thông tin y tế">
+            <div class="card-body">
+                <h5 class="card-title">Thông Tin Y Tế</h5>
+                <p class="card-text">Cung cấp thông tin y tế cần thiết cho EMT trước khi họ đến hiện trường.</p>
+                <a href="{{ url_for('user.profile') }}" class="btn btn-primary">Cập nhật hồ sơ</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-4 shadow-sm">
+            <img src="{{ url_for('static', filename='images/feedback.png') }}" class="card-img-top" alt="Phản hồi">
+            <div class="card-body">
+                <h5 class="card-title">Phản Hồi</h5>
+                <p class="card-text">Gửi phản hồi về dịch vụ để chúng tôi cải thiện.</p>
+                <a href="{{ url_for('user.feedback') }}" class="btn btn-primary">Gửi phản hồi</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

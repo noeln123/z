@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Phản hồi</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.message.label }}<br>
+        {{ form.message(rows=5, cols=50) }}<br>
+        {% for error in form.message.errors %}
+            <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
+{% endblock %}

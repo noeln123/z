@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Quản lý Xe Cứu Thương</h2>
+<a href="{{ url_for('admin.add_ambulance') }}" class="btn btn-primary">Thêm Xe Cứu Thương Mới</a>
+<br><br>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Loại Xe</th>
+            <th>Kích Cỡ</th>
+            <th>Trang Thiết Bị</th>
+            <th>Tài Xế</th>
+            <th>Hành Động</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ambulance in ambulances %}
+        <tr>
+            <td>{{ ambulance.id }}</td>
+            <td>{{ ambulance.ambulance_type }}</td>
+            <td>{{ ambulance.size }}</td>
+            <td>{{ ambulance.equipment }}</td>
+            <td>
+                {% if ambulance.driver %}
+                    {{ ambulance.driver.name }}
+                {% else %}
+                    Chưa có tài xế
+                {% endif %}
+            </td>
+            <td>
+                <a href="{{ url_for('admin.edit_ambulance', ambulance_id=ambulance.id) }}" class="btn btn-warning btn-sm">Sửa</a>
+                <form action="{{ url_for('admin.delete_ambulance', ambulance_id=ambulance.id) }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa xe này?');">Xóa</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
