@@ -1,0 +1,131 @@
+.container {
+    width: 900px;
+    margin: 0 auto;
+    border-radius: 20px;
+    background-color: #fff;
+}
+
+.signup-content, .signin-content {
+    padding: 75px 0;
+    display: flex;
+}
+
+.signup-form, .signup-image,
+.signin-form, .signin-image {
+    width: 50%;
+}
+
+.signup-form, .signin-form {
+    padding-left: 34px;
+}
+
+.form-title {
+    margin-bottom: 32px;
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.form-group {
+    margin-bottom: 25px;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+}
+
+.form-group i {
+    position: absolute;
+    left: 6px;
+    top: 28%;
+    font-size: 14px;
+    height: 14px;
+    opacity: 0.8;
+}
+
+.form-group i.pass-confirm {
+    opacity: 0.5;
+}
+
+.form-group .form-label {
+    position: absolute;
+    top: 20%;
+    left: 30px; 
+    font-weight: 500;
+    line-height: 1.3;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    cursor: text;
+}
+
+.form-group .form-label.hidden {
+    opacity: 0;
+}
+
+.form-group input {
+    width: 100%;
+    display: block;
+    border: none;
+    border-bottom: 1px solid #999;
+    padding: 6px 30px;
+    box-sizing: border-box;
+    border-radius: 0;
+    outline: none;
+}
+
+.form-group input:focus {
+    border-bottom: 2px solid var(--primary);
+    box-shadow: none;
+}
+
+.signup-form .submit-btn,
+.signin-form .submit-btn {
+    margin-top: 32px;
+    outline: none;
+    background-color: var(--primary);
+    color: #fff;
+    width: 30%;
+    transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+.signup-form .submit-btn:hover,
+.signin-form .submit-btn:hover {
+    transform: scale(1.1);
+    opacity: 0.8;
+}
+
+.signup-image figure,
+.signin-image figure {
+    margin: 0 55px;
+}
+
+.signup-form .to-signin a,
+.signin-form .to-signup a {
+    color: var(--primary);
+    transition: color 0.2s ease;
+}
+
+.signup-form .to-signin a:hover,
+.signin-form .to-signup a:hover {
+    color: var(--primary-dark);
+}
+
+@media screen and (min-width: 1024px) {
+    .container {
+        max-width: 1200px;
+    }
+}
+
+@media screen and (max-width: 768px){
+    .signin-image, .signup-image {
+        display: none;
+    }
+
+    .signin-form, .signup-form {
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        max-width: 540px;
+    }
+}

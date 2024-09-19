@@ -2,29 +2,62 @@
 
 {% block title %}Login{% endblock %}
 
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login-register.css') }}" />
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <h2>Login</h2>
-        <form method="POST" novalidate>
-            {{ form.hidden_tag() }}
-            <div class="mb-3">
-                {{ form.email.label(class="form-label") }}
-                {{ form.email(class="form-control", placeholder="Enter your email") }}
-                {% for error in form.email.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-            </div>
-            <div class="mb-3">
-                {{ form.password.label(class="form-label") }}
-                {{ form.password(class="form-control", placeholder="Enter password") }}
-                {% for error in form.password.errors %}
-                    <div class="text-danger">{{ error }}</div>
-                {% endfor %}
-            </div>
-            <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
-        </form>
-        <p class="mt-3">Don't have an account? <a href="{{ url_for('user.register') }}">Register here</a>.</p>
+<div class="container">
+    <div class="row justify-content-center signin-content">
+        <div class="col-md-6 signin-form">
+            <h2 class="form-title">Login</h2>
+            <form method="POST" novalidate>
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    <i class="fa-solid fa-envelope"></i> {{ form.email.label(class="form-label") }}
+                    {{ form.email(class="form-control", placeholder="") }}
+                    {% for error in form.email.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <i class="fa-solid fa-lock"></i> {{ form.password.label(class="form-label") }}
+                    {{ form.password(class="form-control", placeholder="") }}
+                    {% for error in form.password.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn submit-btn">{{ form.submit.label.text }}</button>
+                    <p class="mt-3 to-signup">Don't have an account? <a href="{{ url_for('user.register') }}">Create an account</a>.</p>
+                </div>
+            </form>
+        </div>
+        <div class="signin-image">
+            <figure><img src="{{ url_for('static', filename='images/login-register/signin-image.jpg') }}" alt="sign in image"></figure>
+        </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = document.querySelectorAll('.form-group .form-control');
+    
+        inputs.forEach(input => {
+            const label = input.previousElementSibling;
+    
+                input.addEventListener('focus', function() {
+                label.classList.add('hidden');
+            });
+
+            input.addEventListener('blur', function() {
+                if (input.value.trim() === '') {
+                    label.classList.remove('hidden');
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}
