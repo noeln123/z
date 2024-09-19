@@ -30,7 +30,19 @@ def emt_dashboard():
 @emt_required
 def patient_info(request_id):
     emergency_request = EmergencyRequest.query.get_or_404(request_id)
-    return render_template('patient_info.html', emergency_request=emergency_request)
+    
+    # Kiểm tra xem EMT có quyền xem EM này không (tùy thuộc vào logic ứng dụng của bạn)
+    # Ví dụ: EMT chỉ có thể xem EM đã được dispatch tới họ
+    # Nếu cần thiết, hãy thêm các kiểm tra bổ sung ở đây
+
+    # Truy xuất thông tin hồ sơ của người dùng đã tạo EM
+    user_profile = emergency_request.user.profile  # Giả sử có relationship 'user' và 'profile'
+
+    if not user_profile:
+        flash('Người dùng chưa cập nhật hồ sơ.', 'warning')
+        return redirect(url_for('emt.emt_dashboard'))
+    
+    return render_template('patient_info.html', emergency_request=emergency_request, profile=user_profile)
 
 @emt_bp.route('/update_status/<int:request_id>', methods=['POST'])
 @login_required
@@ -42,6 +54,11 @@ def update_status(request_id):
         new_status = form.status.data
         if new_status in ['On the way', 'Arrived', 'Transporting']:
             emergency_request.status = new_status
+            # Nếu trạng thái mới là 'Arrived', cập nhật trạng thái xe cứu thương thành 'Available'
+            if new_status == 'Arrived':
+                if emergency_request.ambulance:
+                    ambulance = emergency_request.ambulance
+                    ambulance.status = 'Available'
             db.session.commit()
             flash('Trạng thái đã được cập nhật.', 'success')
         else:

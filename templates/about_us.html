@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Về Chúng Tôi</h1>
+    <p>Chào mừng bạn đến với hệ thống quản lý xe cứu thương của chúng tôi. Chúng tôi cam kết cung cấp dịch vụ y tế khẩn cấp chất lượng cao, nhanh chóng và hiệu quả cho cộng đồng.</p>
+    
+    <h2 class="mt-5">Sứ Mệnh</h2>
+    <p>Sứ mệnh của chúng tôi là đảm bảo rằng mỗi yêu cầu y tế khẩn cấp đều được đáp ứng một cách nhanh chóng và chuyên nghiệp, mang lại sự an tâm và hỗ trợ kịp thời cho những người cần giúp đỡ.</p>
+    
+    <h2 class="mt-5">Đội Ngũ Của Chúng Tôi</h2>
+    <p>Đội ngũ của chúng tôi bao gồm các tài xế chuyên nghiệp, y tá có kinh nghiệm và những người hỗ trợ tận tâm, luôn sẵn sàng phục vụ 24/7.</p>
+    
+    <h2 class="mt-5">Liên Hệ Với Chúng Tôi</h2>
+    <p>Để biết thêm thông tin hoặc có bất kỳ câu hỏi nào, vui lòng truy cập trang <a href="{{ url_for('user.contact_us') }}">Liên Hệ</a>.</p>
+</div>
+{% endblock %}

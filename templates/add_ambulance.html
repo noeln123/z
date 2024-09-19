@@ -1,39 +1,93 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Thêm Xe Cứu Thương Mới</h2>
-<form method="POST">
-    {{ form.hidden_tag() }}
-    <div class="form-group">
-        {{ form.ambulance_type.label(class="form-label") }}
-        {{ form.ambulance_type(class="form-control") }}
-        {% for error in form.ambulance_type.errors %}
-            <span class="text-danger">{{ error }}</span>
-        {% endfor %}
+<div class="container-fluid">
+    <h2 class="mb-4">Thêm Xe Cứu Thương Mới</h2>
+
+    <!-- Hiển Thị Thông Báo Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Mẫu Form Thêm Xe Cứu Thương -->
+    <div class="card">
+        <div class="card-body">
+            <form action="{{ url_for('admin.add_ambulance') }}" method="POST">
+                {{ form.hidden_tag() }}
+
+                <!-- Trường Loại Xe Cứu Thương -->
+                <div class="mb-3">
+                    {{ form.ambulance_type.label(class="form-label") }}
+                    {{ form.ambulance_type(class="form-select") }}
+                    {% if form.ambulance_type.errors %}
+                        <div class="text-danger">
+                            {% for error in form.ambulance_type.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Trường Kích Cỡ Xe -->
+                <div class="mb-3">
+                    {{ form.size.label(class="form-label") }}
+                    {{ form.size(class="form-select") }}
+                    {% if form.size.errors %}
+                        <div class="text-danger">
+                            {% for error in form.size.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Trường Trang Thiết Bị -->
+                <div class="mb-3">
+                    {{ form.equipment.label(class="form-label") }}
+                    {{ form.equipment(class="form-select") }}
+                    {% if form.equipment.errors %}
+                        <div class="text-danger">
+                            {% for error in form.equipment.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Trường Gán Tài Xế (Không Bắt Buộc) -->
+                <div class="mb-3">
+                    {{ form.driver_id.label(class="form-label") }}
+                    <select name="{{ form.driver_id.name }}" id="{{ form.driver_id.id }}" class="form-select">
+                        <option value="">-- Chọn Tài Xế  --</option>
+                        {% for driver in driver_choices %}
+                            <option value="{{ driver[0] }}"
+                                {% if not driver[2] %} disabled {% endif %}
+                                {% if form.driver_id.data == driver[0] %} selected {% endif %}>
+                                {{ driver[1] }} {% if not driver[2] %} (Đang lái xe cứu thương) {% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% if form.driver_id.errors %}
+                        <div class="text-danger">
+                            {% for error in form.driver_id.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Nút Submit và Hủy Bỏ -->
+                <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
+                <a href="{{ url_for('admin.manage_ambulances') }}" class="btn btn-secondary">Hủy Bỏ</a>
+            </form>
+        </div>
     </div>
-    <div class="form-group">
-        {{ form.size.label(class="form-label") }}
-        {{ form.size(class="form-control") }}
-        {% for error in form.size.errors %}
-            <span class="text-danger">{{ error }}</span>
-        {% endfor %}
-    </div>
-    <div class="form-group">
-        {{ form.equipment.label(class="form-label") }}
-        {{ form.equipment(class="form-control", rows="3") }}
-        {% for error in form.equipment.errors %}
-            <span class="text-danger">{{ error }}</span>
-        {% endfor %}
-    </div>
-    <div class="form-group">
-        {{ form.driver_id.label(class="form-label") }}
-        {{ form.driver_id(class="form-control") }}
-        {% for error in form.driver_id.errors %}
-            <span class="text-danger">{{ error }}</span>
-        {% endfor %}
-    </div>
-    <br>
-    <button type="submit" class="btn btn-success">Thêm Xe</button>
-    <a href="{{ url_for('admin.manage_ambulances') }}" class="btn btn-secondary">Hủy</a>
-</form>
+</div>
 {% endblock %}

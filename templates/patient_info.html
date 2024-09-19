@@ -1,38 +1,63 @@
+<!-- templates/patient_info.html -->
+
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Thông Tin Bệnh Nhân</h2>
-<div class="card">
-    <div class="card-body">
-        <h5 class="card-title">Yêu Cầu ID: {{ emergency_request.id }}</h5>
-        <p class="card-text"><strong>Tên Bệnh Viện:</strong> {{ emergency_request.hospital_name }}</p>
-        <p class="card-text"><strong>Địa Chỉ Bệnh Viện:</strong> {{ emergency_request.hospital_address }}</p>
-        <p class="card-text"><strong>Số Điện Thoại:</strong> {{ emergency_request.user_phone }}</p>
-        <p class="card-text"><strong>Địa Chỉ Đón:</strong> {{ emergency_request.pickup_address }}</p>
-        <p class="card-text"><strong>Loại Yêu Cầu:</strong> {{ emergency_request.request_type }}</p>
-        <p class="card-text"><strong>Trạng Thái:</strong> 
-            {% if emergency_request.status == 'Pending' %}
-                <span class="badge bg-warning text-dark">Đang chờ</span>
-            {% elif emergency_request.status == 'Dispatched' %}
-                <span class="badge bg-info">Đang điều phối</span>
-            {% elif emergency_request.status == 'On the way' %}
-                <span class="badge bg-primary">Đang trên đường</span>
-            {% elif emergency_request.status == 'Arrived' %}
-                <span class="badge bg-success">Đã đến</span>
-            {% elif emergency_request.status == 'Transporting' %}
-                <span class="badge bg-secondary">Đang vận chuyển</span>
+<div class="container mt-5">
+    <h2 class="mb-4">Emergency Request Information</h2>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <p class="card-text"><strong>Hospital Name:</strong> {{ emergency_request.hospital_name }}</p>
+            <p class="card-text"><strong>Hospital Address:</strong> {{ emergency_request.hospital_address }}</p>
+            <p class="card-text"><strong>Phone Number:</strong> {{ emergency_request.user_phone }}</p>
+            <p class="card-text"><strong>Pickup Address:</strong> {{ emergency_request.pickup_address }}</p>
+            <p class="card-text"><strong>Request Type:</strong> {{ emergency_request.request_type }}</p>
+            <p class="card-text"><strong>Status:</strong> 
+                {% if emergency_request.status == 'Pending' %}
+                    <span class="badge bg-warning text-dark">Pending</span>
+                {% elif emergency_request.status == 'Dispatched' %}
+                    <span class="badge bg-info">Dispatched</span>
+                {% elif emergency_request.status == 'On the way' %}
+                    <span class="badge bg-primary">On the way</span>
+                {% elif emergency_request.status == 'Arrived' %}
+                    <span class="badge bg-success">Arrived</span>
+                {% elif emergency_request.status == 'Transporting' %}
+                    <span class="badge bg-secondary">Transporting</span>
+                {% elif emergency_request.status == 'Canceled' %}
+                    <span class="badge bg-danger">Canceled</span>
+                {% else %}
+                    <span class="badge bg-dark">{{ emergency_request.status }}</span>
+                {% endif %}
+            </p>
+            {% if emergency_request.ambulance %}
+                <p class="card-text"><strong>Ambulance:</strong> {{ emergency_request.ambulance.ambulance_type }} (ID: {{ emergency_request.ambulance.id }})</p>
+                <p class="card-text"><strong>Driver:</strong> {{ emergency_request.ambulance.driver.name }}</p>
             {% else %}
-                <span class="badge bg-dark">{{ emergency_request.status }}</span>
+                <p class="card-text"><strong>Ambulance:</strong> Not assigned yet</p>
             {% endif %}
-        </p>
-        <p class="card-text"><strong>Thông Tin Bệnh Nhân:</strong> {{ emergency_request.patient_info }}</p>
-        {% if emergency_request.ambulance %}
-            <p class="card-text"><strong>Xe Cứu Thương:</strong> {{ emergency_request.ambulance.ambulance_type }} ({{ emergency_request.ambulance.size }})</p>
-            <p class="card-text"><strong>Tài Xế:</strong> {{ emergency_request.ambulance.driver.name }}</p>
-        {% else %}
-            <p class="card-text"><strong>Xe Cứu Thương:</strong> <span class="text-muted">Chưa được chỉ định</span></p>
-        {% endif %}
-        <a href="{{ url_for('emt.emt_dashboard') }}" class="btn btn-secondary">Quay Lại Dashboard</a>
+        </div>
     </div>
+    
+    <h3 class="mb-3">User Profile Information</h3>
+    <div class="card">
+        <div class="card-body">
+            <p class="card-text"><strong>Full Name:</strong> {{ profile.full_name }}</p>
+            <p class="card-text"><strong>Phone Number:</strong> {{ profile.phone_number }}</p>
+            <p class="card-text"><strong>Address:</strong> {{ profile.address }}</p>
+            <p class="card-text"><strong>Medical History:</strong> {{ profile.medical_history or 'None' }}</p>
+            <p class="card-text"><strong>Allergies:</strong> {{ profile.allergies or 'None' }}</p>
+            <p class="card-text"><strong>Emergency Contact:</strong> {{ profile.emergency_contact }}</p>
+        </div>
+    </div>
+    
+    {% if emergency_request.status == 'Pending' %}
+        <form action="{{ url_for('emt.view_emergency', emergency_id=emergency_request.id) }}" method="POST" class="mt-4">
+            {{ form.hidden_tag() }}
+            <button type="submit" class="btn btn-danger">Cancel Emergency Request</button>
+        </form>
+    {% endif %}
+    
+    <a href="{{ url_for('emt.emt_dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
 </div>
 {% endblock %}

@@ -10,6 +10,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(400), nullable=False)
     role = db.Column(db.String(20), nullable=False)  # 'user', 'admin', 'emt'
     profile = db.relationship('Profile', backref='user', uselist=False)
+    emergency_requests = db.relationship('EmergencyRequest', backref='user', lazy=True)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -58,7 +59,7 @@ class EmergencyRequest(db.Model):
     user_phone = db.Column(db.String(20))
     pickup_address = db.Column(db.String(200))
     request_type = db.Column(db.String(20))  # 'Emergency' or 'Non-Emergency'
-    status = db.Column(db.String(20), default='Pending')  # 'Pending', 'Dispatched', etc.
+    status = db.Column(db.String(20), default='Pending')  # 'Pending', 'Dispatched', 'On the way', 'Transporting',  'Arrived', 'Canceled'
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     ambulance_id = db.Column(db.Integer, db.ForeignKey('ambulances.id'))
     patient_info = db.Column(db.Text)
@@ -68,4 +69,13 @@ class Feedback(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     message = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, server_default=db.func.now())
+
+class ContactMessage(db.Model):
+    __tablename__ = 'contact_messages'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    subject = db.Column(db.String(150), nullable=False)
+    message = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, server_default=db.func.now())

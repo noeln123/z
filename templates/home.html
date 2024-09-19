@@ -1,48 +1,91 @@
 {% extends "base.html" %}
 
-{% block title %}Trang chủ{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block content %}
+<style>
+    /* Định nghĩa hiệu ứng nhấp nháy cho viền */
+    @keyframes blinkBorder {
+        0% {
+            border-color: red;
+        }
+        50% {
+            border-color: transparent;
+        }
+        100% {
+            border-color: red;
+        }
+    }
+
+    /* Áp dụng hiệu ứng nhấp nháy cho viền của card */
+    .blinking-border {
+        border: 2px solid red;
+        animation: blinkBorder 1s infinite;
+    }
+</style>
+
 <div class="jumbotron text-center bg-light p-5 rounded">
-    <h1 class="display-4">Chào mừng đến với Rapid Rescue</h1>
-    <p class="lead">Ứng dụng web giúp bạn nhanh chóng yêu cầu dịch vụ xe cứu thương, theo dõi vị trí xe cứu thương theo thời gian thực và cung cấp thông tin y tế cần thiết cho EMT.</p>
+    <h1 class="display-4">Welcome to Rapid Rescue</h1>
+    <p class="lead">A web application that helps you quickly request an ambulance, track the ambulance in real-time, and provide essential medical information to EMTs.</p>
     <hr class="my-4">
     {% if not current_user.is_authenticated %}
-        <a class="btn btn-primary btn-lg" href="{{ url_for('user.register') }}" role="button">Đăng ký ngay</a>
-        <a class="btn btn-secondary btn-lg" href="{{ url_for('user.login') }}" role="button">Đăng nhập</a>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('user.register') }}" role="button">Register Now</a>
+        <a class="btn btn-secondary btn-lg" href="{{ url_for('user.login') }}" role="button">Login</a>
     {% else %}
-        <a class="btn btn-primary btn-lg" href="{{ url_for('user.emergency_request') }}" role="button">Yêu cầu Khẩn Cấp</a>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('user.emergency_request') }}" role="button">Emergency Request</a>
     {% endif %}
 </div>
 
 <div class="row mt-5">
+
+    {% if existing_em %}
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm blinking-border">
+                <div class="alert alert-danger text-center m-0" role="alert">
+                    You are requesting an Emergency Request!
+                </div>
+                <img src="{{ url_for('static', filename='images/track.png') }}" class="card-img-top" alt="Track Ambulance">
+                <div class="card-body">
+                    <h5 class="card-title">Track Ambulance</h5>
+                    <p class="card-text">Monitor the ambulance's real-time location to ensure timely arrival.</p>
+                        <a href="{{ url_for('user.track_emergency', emergency_id=existing_em.id) }}" class="btn btn-primary btn-danger">Track now</a>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+                <img src="{{ url_for('static', filename='images/track.png') }}" class="card-img-top" alt="Track Ambulance">
+                <div class="card-body">
+                    <h5 class="card-title">Track Ambulance</h5>
+                    <p class="card-text">Monitor the ambulance's real-time location to ensure timely arrival.</p>
+                        <a href="{{ url_for('user.track_emergency', emergency_id=1) }}" class="btn btn-primary" disable>Track now</a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+
+
+
+
     <div class="col-md-4">
         <div class="card mb-4 shadow-sm">
-            <img src="{{ url_for('static', filename='images/track.png') }}" class="card-img-top" alt="Theo dõi xe cứu thương">
+            <img src="{{ url_for('static', filename='images/medical_info.png') }}" class="card-img-top" alt="Medical Information">
             <div class="card-body">
-                <h5 class="card-title">Theo dõi Xe Cứu Thương</h5>
-                <p class="card-text">Giám sát vị trí xe cứu thương theo thời gian thực để đảm bảo sự đến kịp thời.</p>
-                <a href="{{ url_for('user.track_emergency', request_id=1) }}" class="btn btn-primary">Tìm hiểu thêm</a>
+                <h5 class="card-title">Medical Information</h5>
+                <p class="card-text">Provide essential medical information to EMTs before they arrive on-site.</p>
+                <a href="{{ url_for('user.profile') }}" class="btn btn-primary">Update Profile</a>
             </div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="card mb-4 shadow-sm">
-            <img src="{{ url_for('static', filename='images/medical_info.png') }}" class="card-img-top" alt="Thông tin y tế">
+            <img src="{{ url_for('static', filename='images/feedback.png') }}" class="card-img-top" alt="Feedback">
             <div class="card-body">
-                <h5 class="card-title">Thông Tin Y Tế</h5>
-                <p class="card-text">Cung cấp thông tin y tế cần thiết cho EMT trước khi họ đến hiện trường.</p>
-                <a href="{{ url_for('user.profile') }}" class="btn btn-primary">Cập nhật hồ sơ</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card mb-4 shadow-sm">
-            <img src="{{ url_for('static', filename='images/feedback.png') }}" class="card-img-top" alt="Phản hồi">
-            <div class="card-body">
-                <h5 class="card-title">Phản Hồi</h5>
-                <p class="card-text">Gửi phản hồi về dịch vụ để chúng tôi cải thiện.</p>
-                <a href="{{ url_for('user.feedback') }}" class="btn btn-primary">Gửi phản hồi</a>
+                <h5 class="card-title">Feedback</h5>
+                <p class="card-text">Send feedback on the service to help us improve.</p>
+                <a href="{{ url_for('user.feedback') }}" class="btn btn-primary">Send Feedback</a>
             </div>
         </div>
     </div>

@@ -1,37 +1,37 @@
 {% extends "base.html" %}
 
-{% block title %}Yêu cầu khẩn cấp{% endblock %}
+{% block title %}Emergency Request{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <h2>Yêu cầu khẩn cấp</h2>
+        <h2>Emergency Request</h2>
         <form method="POST" novalidate>
             {{ form.hidden_tag() }}
             <div class="mb-3">
                 {{ form.hospital_name.label(class="form-label") }}
-                {{ form.hospital_name(class="form-control", placeholder="Nhập tên bệnh viện") }}
+                {{ form.hospital_name(class="form-control", placeholder="Enter hospital name") }}
                 {% for error in form.hospital_name.errors %}
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
             <div class="mb-3">
                 {{ form.hospital_address.label(class="form-label") }}
-                {{ form.hospital_address(class="form-control", placeholder="Nhập địa chỉ bệnh viện") }}
+                {{ form.hospital_address(class="form-control", placeholder="Enter hospital address") }}
                 {% for error in form.hospital_address.errors %}
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
             <div class="mb-3">
                 {{ form.user_phone.label(class="form-label") }}
-                {{ form.user_phone(class="form-control", placeholder="Nhập số điện thoại di động") }}
+                {{ form.user_phone(class="form-control", placeholder="Enter mobile phone number") }}
                 {% for error in form.user_phone.errors %}
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
             <div class="mb-3">
                 {{ form.pickup_address.label(class="form-label") }}
-                {{ form.pickup_address(class="form-control", placeholder="Nhập địa chỉ đón") }}
+                {{ form.pickup_address(class="form-control", placeholder="Enter pickup address") }}
                 {% for error in form.pickup_address.errors %}
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
@@ -44,7 +44,7 @@
                 {% endfor %}
             </div>
             <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
-            <a href="{{ url_for('user.home') }}" class="btn btn-secondary">Hủy</a>
+            <a href="{{ url_for('user.home') }}" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
 </div>

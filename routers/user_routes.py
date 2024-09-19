@@ -1,13 +1,17 @@
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from extensions import db
-from models import User, Profile, EmergencyRequest, Feedback
+from models import User, Profile, EmergencyRequest, Feedback, ContactMessage
 from forms import RegistrationForm, LoginForm, EmergencyRequestForm, FeedbackForm, ProfileForm, ContactForm
-from . import user_bp  # Sử dụng relative import
+from . import user_bp  # Using relative import
 
 @user_bp.route('/')
 def home():
-    return render_template('home.html')
+    if current_user.is_authenticated:
+        existing_em = EmergencyRequest.query.filter_by(user_id=current_user.id).filter(EmergencyRequest.status != 'Arrived', EmergencyRequest.status != 'Canceled').first()
+    else:
+        existing_em = None
+    return render_template('home.html', existing_em=existing_em)
 
 @user_bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -19,7 +23,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.', 'success')
+        flash('Registration successful! You can log in now.', 'success')
         return redirect(url_for('user.login'))
     return render_template('register.html', form=form)
 
@@ -32,17 +36,17 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user)
-            flash('Đăng nhập thành công!', 'success')
+            flash('Login successful!', 'success')
             return redirect(url_for('user.home'))
         else:
-            flash('Email hoặc mật khẩu không đúng.', 'danger')
+            flash('Incorrect email or password.', 'danger')
     return render_template('login.html', form=form)
 
 @user_bp.route('/logout')
 @login_required
 def logout():
     logout_user()
-    flash('Bạn đã đăng xuất.', 'info')
+    flash('You have logged out.', 'info')
     return redirect(url_for('user.home'))
 
 @user_bp.route('/profile', methods=['GET', 'POST'])
@@ -78,7 +82,7 @@ def profile():
             )
             db.session.add(profile)
         db.session.commit()
-        flash('Hồ sơ đã được cập nhật.', 'success')
+        flash('Profile updated.', 'success')
         return redirect(url_for('user.profile'))
     return render_template('profile.html', form=form)
 
@@ -86,6 +90,12 @@ def profile():
 @login_required
 def emergency_request():
     form = EmergencyRequestForm()
+
+    existing_em = EmergencyRequest.query.filter_by(user_id=current_user.id).filter(EmergencyRequest.status != 'Arrived', EmergencyRequest.status != 'Canceled').first()
+    if existing_em:
+        flash('Bạn đã có một Emergency Request đang hoạt động.', 'warning')
+        return redirect(url_for('user.track_emergency', emergency_id=existing_em.id))
+
     if form.validate_on_submit():
         request = EmergencyRequest(
             hospital_name=form.hospital_name.data,
@@ -97,16 +107,19 @@ def emergency_request():
         )
         db.session.add(request)
         db.session.commit()
-        flash('Yêu cầu khẩn cấp đã được gửi.', 'success')
+        flash('Emergency request submitted.', 'success')
         return redirect(url_for('user.home'))
-    return render_template('emergency_request.html', form=form)
+    return render_template("emergency_request.html", form=form)
+    # return render_template('emergency_request.html', form=form)
 
-@user_bp.route('/track_emergency/<int:request_id>')
+
+
+@user_bp.route('/track_emergency/<int:emergency_id>')
 @login_required
-def track_emergency(request_id):
-    request_obj = EmergencyRequest.query.get_or_404(request_id)
+def track_emergency(emergency_id):
+    request_obj = EmergencyRequest.query.get_or_404(emergency_id)
     ambulance = request_obj.ambulance
-    # Giả sử bạn có một hàm để lấy vị trí hiện tại của xe cứu thương
+    # Assume you have a function to get the current location of the ambulance
     # current_location = get_current_location(ambulance.id)
     return render_template('track_emergency.html', request=request_obj, ambulance=ambulance)
 
@@ -121,7 +134,7 @@ def feedback():
         )
         db.session.add(feedback)
         db.session.commit()
-        flash('Cảm ơn phản hồi của bạn!', 'success')
+        flash('Thank you for your feedback!', 'success')
         return redirect(url_for('user.home'))
     return render_template('feedback.html', form=form)
 
@@ -129,9 +142,17 @@ def feedback():
 def contact_us():
     form = ContactForm()
     if form.validate_on_submit():
-        # Xử lý lưu hoặc gửi email
-        flash('Tin nhắn của bạn đã được gửi. Cảm ơn!', 'success')
-        return redirect(url_for('user.home'))
+        # Lưu thông tin liên hệ vào cơ sở dữ liệu
+        contact_message = ContactMessage(
+            name=form.name.data,
+            email=form.email.data,
+            subject=form.subject.data,
+            message=form.message.data
+        )
+        db.session.add(contact_message)
+        db.session.commit()
+        flash('Your message has been sent. Thank you!', 'success')
+        return redirect(url_for('user.contact_us'))
     return render_template('contact_us.html', form=form)
 
 @user_bp.route('/about_us')
@@ -149,7 +170,7 @@ def ambulance_types():
 
 @user_bp.route('/costs')
 def costs():
-    # Giả sử bạn có bảng hoặc cấu hình để lưu thông tin chi phí
+    # Assume you have a table or configuration to store cost information
     return render_template('costs.html')
 
 @user_bp.route('/driver_list')

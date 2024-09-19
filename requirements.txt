@@ -4,3 +4,5 @@ Flask-WTF
 Flask-Login
 Flask-Migrate
 Werkzeug
+python-dotenv
+email_validator

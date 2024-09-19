@@ -2,6 +2,7 @@ from flask import Flask
 from config import Config
 from extensions import db, login_manager
 from routers import user_bp, admin_bp, emt_bp
+from flask_migrate import Migrate
 
 def create_app():
     app = Flask(__name__)
@@ -12,6 +13,7 @@ def create_app():
     login_manager.init_app(app)
     login_manager.login_view = 'user.login'
     login_manager.login_message_category = 'info'
+    migrate = Migrate(app, db)
 
     # Đăng ký blueprints
     app.register_blueprint(user_bp)

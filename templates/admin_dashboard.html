@@ -1,49 +1,40 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+
 <div class="container-fluid">
-    <h1 class="mb-4">Dashboard Quản Trị</h1>
+    <h1 class="mb-4">Admin Dashboard</h1>
+
     
-    <!-- Flash Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    
-    <!-- Các Cards Tổng Quan -->
+    <!-- Overview Cards -->
     <div class="row">
         <div class="col-md-3 mb-4">
             <div class="card text-white bg-primary h-100">
                 <div class="card-body">
-                    <div class="card-title">Tổng Số Xe Cứu Thương</div>
+                    <div class="card-title">Total Ambulances</div>
                     <h2 class="card-text">{{ total_ambulances }}</h2>
                 </div>
                 <div class="card-footer">
-                    <a href="{{ url_for('admin.manage_ambulances') }}" class="text-white">Xem Chi Tiết</a>
+                    <a href="{{ url_for('admin.manage_ambulances') }}" class="text-white">View Details</a>
                 </div>
             </div>
         </div>
         <div class="col-md-3 mb-4">
             <div class="card text-white bg-success h-100">
                 <div class="card-body">
-                    <div class="card-title">Tổng Số Tài Xế</div>
+                    <div class="card-title">Total Drivers</div>
                     <h2 class="card-text">{{ total_drivers }}</h2>
                 </div>
                 <div class="card-footer">
-                    <a href="{{ url_for('admin.manage_drivers') }}" class="text-white">Xem Chi Tiết</a>
+                    <a href="{{ url_for('admin.manage_drivers') }}" class="text-white">View Details</a>
                 </div>
             </div>
         </div>
         <div class="col-md-3 mb-4">
             <div class="card text-white bg-warning h-100">
                 <div class="card-body">
-                    <div class="card-title">Tổng Số Yêu Cầu Khẩn Cấp</div>
+                    <div class="card-title">Total Emergency Requests</div>
                     <h2 class="card-text">{{ total_emergency_requests }}</h2>
                 </div>
             </div>
@@ -51,33 +42,33 @@
         <div class="col-md-3 mb-4">
             <div class="card text-white bg-danger h-100">
                 <div class="card-body">
-                    <div class="card-title">Yêu Cầu Đang Vận Chuyển</div>
+                    <div class="card-title">Requests in Transit</div>
                     <h2 class="card-text">{{ transporting_requests }}</h2>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Danh Sách Yêu Cầu Khẩn Cấp Gần Đây -->
+    <!-- Recent Emergency Requests List -->
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="mb-0">Danh Sách Yêu Cầu Khẩn Cấp Gần Đây</h5>
+            <h5 class="mb-0">Recent Emergency Requests List</h5>
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-striped table-bordered align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th>ID Yêu Cầu</th>
-                            <th>Tên Bệnh Viện</th>
-                            <th>Địa Chỉ Bệnh Viện</th>
-                            <th>Số Điện Thoại</th>
-                            <th>Địa Chỉ Đón</th>
-                            <th>Loại Yêu Cầu</th>
-                            <th>Trạng Thái</th>
-                            <th>Xe Cứu Thương</th>
-                            <th>Vị Trí Xe</th>
-                            <th>Hành Động</th>
+                            <th>Request ID</th>
+                            <th>Hospital Name</th>
+                            <th>Hospital Address</th>
+                            <th>Phone Number</th>
+                            <th>Pickup Address</th>
+                            <th>Request Type</th>
+                            <th>Status</th>
+                            <th>Ambulance</th>
+                            <th>Ambulance Location</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -91,15 +82,15 @@
                             <td>{{ request.request_type }}</td>
                             <td>
                                 {% if request.status == 'Pending' %}
-                                    <span class="badge bg-warning text-dark">Đang chờ</span>
+                                    <span class="badge bg-warning text-dark">Pending</span>
                                 {% elif request.status == 'Dispatched' %}
-                                    <span class="badge bg-info">Đang điều phối</span>
+                                    <span class="badge bg-info">Dispatched</span>
                                 {% elif request.status == 'On the way' %}
-                                    <span class="badge bg-primary">Đang trên đường</span>
+                                    <span class="badge bg-primary">On the way</span>
                                 {% elif request.status == 'Arrived' %}
-                                    <span class="badge bg-success">Đã đến</span>
+                                    <span class="badge bg-success">Arrived</span>
                                 {% elif request.status == 'Transporting' %}
-                                    <span class="badge bg-secondary">Đang vận chuyển</span>
+                                    <span class="badge bg-secondary">Transporting</span>
                                 {% else %}
                                     <span class="badge bg-dark">{{ request.status }}</span>
                                 {% endif %}
@@ -110,29 +101,33 @@
                                     {% if request.ambulance.driver %}
                                         {{ request.ambulance.driver.name }}
                                     {% else %}
-                                        <span class="text-muted">Chưa có tài xế</span>
+                                        <span class="text-muted">No driver assigned</span>
                                     {% endif %}
                                 {% else %}
-                                    <span class="text-muted">Chưa được chỉ định</span>
+                                    <span class="text-muted">Not assigned</span>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if request.ambulance and request.ambulance.driver %}
                                     {{ request.ambulance.driver.location }}
-                                    <!-- Bạn có thể thêm liên kết tới bản đồ hoặc tích hợp Google Maps/OpenStreetMap -->
+                                    <!-- You can add a link to a map or integrate Google Maps/OpenStreetMap -->
                                 {% else %}
                                     N/A
                                 {% endif %}
                             </td>
                             <td>
                                 <form action="{{ url_for('admin.dispatch_control', request_id=request.id) }}" method="GET" style="display:inline;">
-                                    <button type="submit" class="btn btn-sm btn-success">Điều Phối</button>
+                                    {% if request.status == "Pending" %}
+                                        <button type="submit" class="btn btn-sm btn-success">Dispatch</button>
+                                    {% else %}
+                                        <button type="submit" class="btn btn-sm btn-success" disabled>Dispatch</button>
+                                    {% endif %}
                                 </form>
                             </td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="10" class="text-center">Không có yêu cầu khẩn cấp nào.</td>
+                            <td colspan="10" class="text-center">No emergency requests available.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -141,23 +136,23 @@
         </div>
     </div>
     
-    <!-- Danh Sách Xe Cứu Thương Đang Hoạt Động -->
+    <!-- Active Ambulances List -->
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="mb-0">Xe Cứu Thương Đang Hoạt Động</h5>
+            <h5 class="mb-0">Active Ambulances</h5>
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-striped table-bordered align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th>ID Xe</th>
-                            <th>Loại Xe</th>
-                            <th>Kích Cỡ</th>
-                            <th>Trang Thiết Bị</th>
-                            <th>Tài Xế</th>
-                            <th>Vị Trí Hiện Tại</th>
-                            <th>Hành Động</th>
+                            <th>Ambulance ID</th>
+                            <th>Type</th>
+                            <th>Size</th>
+                            <th>Equipment</th>
+                            <th>Driver</th>
+                            <th>Current Location</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -172,27 +167,27 @@
                                     {{ ambulance.driver.name }}<br>
                                     <small>{{ ambulance.driver.contact_info }}</small>
                                 {% else %}
-                                    <span class="text-muted">Chưa có tài xế</span>
+                                    <span class="text-muted">No driver assigned</span>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if ambulance.driver and ambulance.driver.location %}
                                     {{ ambulance.driver.location }}
-                                    <!-- Bạn có thể thêm liên kết tới bản đồ hoặc tích hợp Google Maps/OpenStreetMap -->
+                                    <!-- You can add a link to a map or integrate Google Maps/OpenStreetMap -->
                                 {% else %}
                                     N/A
                                 {% endif %}
                             </td>
                             <td>
-                                <a href="{{ url_for('admin.edit_ambulance', ambulance_id=ambulance.id) }}" class="btn btn-sm btn-warning">Sửa</a>
+                                <a href="{{ url_for('admin.edit_ambulance', ambulance_id=ambulance.id) }}" class="btn btn-sm btn-warning">Edit</a>
                                 <form action="{{ url_for('admin.delete_ambulance', ambulance_id=ambulance.id) }}" method="POST" style="display:inline;">
-                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa xe này?');">Xóa</button>
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this ambulance?');">Delete</button>
                                 </form>
                             </td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="7" class="text-center">Không có xe cứu thương nào đang hoạt động.</td>
+                            <td colspan="7" class="text-center">No active ambulances available.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -201,6 +196,6 @@
         </div>
     </div>
     
-    <!-- Bạn có thể thêm các phần khác như biểu đồ thống kê nếu cần -->
+    <!-- You can add other sections like statistical charts if needed -->
 </div>
 {% endblock %}

@@ -11,7 +11,7 @@ def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if current_user.role != 'admin':
-            flash('Bạn không có quyền truy cập trang này.', 'danger')
+            flash('You do not have permission to access this page.', 'danger')
             return redirect(url_for('user.home'))
         return f(*args, **kwargs)
     return decorated_function
@@ -20,22 +20,22 @@ def admin_required(f):
 @login_required
 @admin_required
 def admin_dashboard():
-    # Truy vấn dữ liệu tổng quan
+    # Query overview data
     total_ambulances = Ambulance.query.count()
     total_drivers = Driver.query.count()
     total_emergency_requests = EmergencyRequest.query.count()
     
-    # Các yêu cầu khẩn cấp theo trạng thái
+    # Emergency requests by status
     pending_requests = EmergencyRequest.query.filter_by(status='Pending').count()
     dispatched_requests = EmergencyRequest.query.filter_by(status='Dispatched').count()
     on_the_way_requests = EmergencyRequest.query.filter_by(status='On the way').count()
     arrived_requests = EmergencyRequest.query.filter_by(status='Arrived').count()
     transporting_requests = EmergencyRequest.query.filter_by(status='Transporting').count()
     
-    # Truy vấn danh sách yêu cầu khẩn cấp gần đây
+    # Query the list of recent emergency requests
     recent_requests = EmergencyRequest.query.order_by(EmergencyRequest.id.desc()).limit(10).all()
     
-    # Truy vấn danh sách xe cứu thương đang hoạt động (join với EM có status 'Transporting', 'On the way', )
+    # Query the list of active ambulances (join with EmergencyRequest having status 'Transporting', 'On the way')
     statuses = ['On the way', 'Transporting']
     active_ambulances = Ambulance.query.join(EmergencyRequest).filter(EmergencyRequest.status.in_(statuses)).all()
     
@@ -51,8 +51,6 @@ def admin_dashboard():
                            recent_requests=recent_requests,
                            active_ambulances=active_ambulances)
 
-
-
 @admin_bp.route('/manage_ambulances', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -65,7 +63,17 @@ def manage_ambulances():
 @admin_required
 def add_ambulance():
     form = UpdateAmbulanceForm()
-    form.driver_id.choices = [(driver.id, driver.name) for driver in Driver.query.all()]
+
+    # Get all drivers
+    drivers = Driver.query.all()
+    # Create a list of tuples containing driver information and their status
+    driver_choices = []
+    for driver in drivers:
+        # Check if this driver is already assigned to an ambulance
+        assigned = Ambulance.query.filter_by(driver_id=driver.id).first()
+        is_available = not assigned  # If not assigned, the driver is available
+        driver_choices.append((driver.id, driver.name, is_available))
+
     if form.validate_on_submit():
         ambulance = Ambulance(
             ambulance_type=form.ambulance_type.data,
@@ -75,9 +83,9 @@ def add_ambulance():
         )
         db.session.add(ambulance)
         db.session.commit()
-        flash('Xe cứu thương đã được thêm.', 'success')
+        flash('Ambulance has been added.', 'success')
         return redirect(url_for('admin.manage_ambulances'))
-    return render_template('add_ambulance.html', form=form)
+    return render_template('add_ambulance.html', form=form, driver_choices=driver_choices)
 
 @admin_bp.route('/edit_ambulance/<int:ambulance_id>', methods=['GET', 'POST'])
 @login_required
@@ -92,7 +100,7 @@ def edit_ambulance(ambulance_id):
         ambulance.equipment = form.equipment.data
         ambulance.driver_id = form.driver_id.data
         db.session.commit()
-        flash('Thông tin xe cứu thương đã được cập nhật.', 'success')
+        flash('Ambulance information has been updated.', 'success')
         return redirect(url_for('admin.manage_ambulances'))
     return render_template('edit_ambulance.html', form=form, ambulance=ambulance)
 
@@ -103,7 +111,7 @@ def delete_ambulance(ambulance_id):
     ambulance = Ambulance.query.get_or_404(ambulance_id)
     db.session.delete(ambulance)
     db.session.commit()
-    flash('Xe cứu thương đã được xóa.', 'success')
+    flash('Ambulance has been deleted.', 'success')
     return redirect(url_for('admin.manage_ambulances'))
 
 @admin_bp.route('/manage_drivers', methods=['GET', 'POST'])
@@ -117,7 +125,7 @@ def manage_drivers():
 @login_required
 @admin_required
 def add_driver():
-    from forms import DriverForm  # Tạo một form mới cho Driver
+    from forms import DriverForm  # Create a new form for Driver
     form = DriverForm()
     if form.validate_on_submit():
         driver = Driver(
@@ -127,7 +135,7 @@ def add_driver():
         )
         db.session.add(driver)
         db.session.commit()
-        flash('Tài xế đã được thêm.', 'success')
+        flash('Driver has been added.', 'success')
         return redirect(url_for('admin.manage_drivers'))
     return render_template('add_driver.html', form=form)
 
@@ -136,14 +144,14 @@ def add_driver():
 @admin_required
 def edit_driver(driver_id):
     driver = Driver.query.get_or_404(driver_id)
-    from forms import DriverForm  # Tạo một form mới cho Driver
+    from forms import DriverForm  # Create a new form for Driver
     form = DriverForm(obj=driver)
     if form.validate_on_submit():
         driver.name = form.name.data
         driver.contact_info = form.contact_info.data
         driver.location = form.location.data
         db.session.commit()
-        flash('Thông tin tài xế đã được cập nhật.', 'success')
+        flash('Driver information has been updated.', 'success')
         return redirect(url_for('admin.manage_drivers'))
     return render_template('edit_driver.html', form=form, driver=driver)
 
@@ -154,7 +162,7 @@ def delete_driver(driver_id):
     driver = Driver.query.get_or_404(driver_id)
     db.session.delete(driver)
     db.session.commit()
-    flash('Tài xế đã được xóa.', 'success')
+    flash('Driver has been deleted.', 'success')
     return redirect(url_for('admin.manage_drivers'))
 
 @admin_bp.route('/dispatch_control/<int:request_id>', methods=['GET', 'POST'])
@@ -169,9 +177,10 @@ def dispatch_control(request_id):
         if ambulance:
             emergency_request.ambulance_id = ambulance.id
             emergency_request.status = 'Dispatched'
-            # Cập nhật trạng thái xe cứu thương nếu cần
+            ambulance.status = 'Unavailable'
+            # Update the ambulance status if necessary
             db.session.commit()
-            flash('Xe cứu thương đã được chỉ định.', 'success')
+            flash('Ambulance has been assigned.', 'success')
             return redirect(url_for('admin.admin_dashboard'))
     return render_template('dispatch_control.html', emergency_request=emergency_request, ambulances=ambulances)
 
@@ -186,7 +195,7 @@ def real_time_monitor():
 @login_required
 @admin_required
 def send_message():
-    # Xử lý gửi tin nhắn đến EMT hoặc người dùng
-    # Bạn có thể sử dụng các công cụ như Flask-Mail hoặc tích hợp API gửi tin nhắn
-    flash('Tin nhắn đã được gửi.', 'success')
+    # Handle sending messages to EMT or users
+    # You can use tools like Flask-Mail or integrate an SMS API
+    flash('Message has been sent.', 'success')
     return redirect(url_for('admin.admin_dashboard'))
