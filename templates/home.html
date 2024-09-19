@@ -27,80 +27,86 @@
         animation: blinkBorder 1s infinite;
     }
 </style>
-
-<div class="jumbotron text-center home-banner">
-    <div class="home-bannertop p-5 mb-3">
-        <h1 class="display-4 banner-title">Welcome to Rapid Rescue</h1>
-        <p class="lead">A web application that helps you quickly request an ambulance, track the ambulance in real-time, and provide essential medical information to EMTs.</p>
-    </div>
-    {% if not current_user.is_authenticated %}
-    <a class="btn btn-lg m-1 register-btn" href="{{ url_for('user.register') }}" role="button">Register Now</a>
-    <a class="btn btn-lg m-1 login-btn" href="{{ url_for('user.login') }}" role="button">Login</a>
-    {% else %}
-    <div class="home-bannerbottom p-3">
-        <div class="banner-image">
-            <img src="{{ url_for('static', filename='images/home/banner.jpg') }}" class="banner-img" alt="Emergency Request">
-            <div class="banner-overlay"></div>
+<div class="container">
+    <div class="jumbotron text-center home-banner">
+        <div class="home-bannertop p-5 mb-3">
+            <h1 class="display-4 banner-title">Welcome to Rapid Rescue</h1>
+            <p class="lead">A web application that helps you quickly request an ambulance, track the ambulance in real-time, and provide essential medical information to EMTs.</p>
         </div>
-        <div class="banner-text">
-            <h3 class="banner-subtitle">Requires medical assistance?<br>Needs to call an ambulance?</h3>
-            <a class="btn btn-primary btn-lg request-btn blinking-grow" href="{{ url_for('user.emergency_request') }}" role="button">Emergency Request</a>
+        {% if not current_user.is_authenticated %}
+        <a class="btn btn-lg m-1 register-btn" href="{{ url_for('user.register') }}" role="button">Register Now</a>
+        <a class="btn btn-lg m-1 login-btn" href="{{ url_for('user.login') }}" role="button">Login</a>
+        {% else %}
+        <div class="home-bannerbottom p-3">
+            <div class="banner-image">
+                <img src="{{ url_for('static', filename='images/home/banner.jpg') }}" class="banner-img" alt="Emergency Request">
+                <div class="banner-overlay"></div>
+            </div>
+            <div class="banner-text">
+                <h3 class="banner-subtitle">Requires medical assistance?<br>Needs to call an ambulance?</h3>
+                <a class="btn btn-primary btn-lg request-btn blinking-grow" href="{{ url_for('user.emergency_request') }}" role="button">Emergency Request</a>
+            </div>
         </div>
+        {% endif %}
     </div>
-    {% endif %}
 </div>
 
-<div class="row mt-5">
-
-    {% if existing_em %}
+<div class="home-menu">
+    <div class="container row">
+        {% if existing_em %}
+            <div class="col-md-4">
+                <a class="menu-card mb-4 blinking-border menu-card-track"  href="{{ url_for('user.track_emergency', emergency_id=existing_em.id) }}">
+                    <div class="alert alert-danger text-center m-0 request-message" role="alert">
+                        You are requesting an Emergency Request!
+                    </div>
+                    <div class="menu-card-img">
+                        <img src="{{ url_for('static', filename='images/home/track-ambulance.png') }}" class="menu-card-image" alt="Track Ambulance" style="width: 180%;">
+                    </div>
+                    <div class="menu-card-body">
+                        <h5 class="menu-card-title">Track Ambulance</h5>
+                        <p class="menu-card-text">Monitor the ambulance's real-time location to ensure timely arrival.</p>
+                    </div>
+                    <div class="menu-card-btn menu-card-btn btn-track">Track now</div>
+                </a>
+            </div>
+        {% else %}
+            <div class="col-md-4">
+                <a class="menu-card mb-4 menu-card-disabled" href="{{ url_for('user.track_emergency', emergency_id=1) }}" >
+                    <div class="menu-card-img">
+                        <img src="{{ url_for('static', filename='images/home/track-ambulance.png') }}" class="menu-card-image" alt="Track Ambulance" style="width: 180%;">
+                    </div>
+                    <div class="menu-card-body">
+                        <h5 class="menu-card-title">Track Ambulance</h5>
+                        <p class="menu-card-text">Monitor the ambulance's real-time location to ensure timely arrival.</p>
+                    </div>
+                    <div class="menu-card-btn btn-disabled" >You don't have any requests to track</div>
+                </a>
+            </div>
+        {% endif %}
+        
         <div class="col-md-4">
-            <div class="card mb-4 shadow-sm blinking-border">
-                <div class="alert alert-danger text-center m-0" role="alert">
-                    You are requesting an Emergency Request!
+            <a class="menu-card mb-4" href="{{ url_for('user.profile') }}">
+                <div class="menu-card-img">
+                    <img src="{{ url_for('static', filename='images/home/medical_info.png') }}" class="menu-card-image" alt="Medical Information">
                 </div>
-                <img src="{{ url_for('static', filename='images/track.png') }}" class="card-img-top" alt="Track Ambulance">
-                <div class="card-body">
-                    <h5 class="card-title">Track Ambulance</h5>
-                    <p class="card-text">Monitor the ambulance's real-time location to ensure timely arrival.</p>
-                        <a href="{{ url_for('user.track_emergency', emergency_id=existing_em.id) }}" class="btn btn-primary btn-danger">Track now</a>
+                <div class="menu-card-body">
+                    <h5 class="menu-card-title">Medical Information</h5>
+                    <p class="menu-card-text">Provide essential medical information to EMTs before they arrive on-site.</p>
                 </div>
-            </div>
+                <div class="menu-card-btn">Update Profile</div>
+            </a>
         </div>
-    {% else %}
         <div class="col-md-4">
-            <div class="card mb-4 shadow-sm">
-                <img src="{{ url_for('static', filename='images/track.png') }}" class="card-img-top" alt="Track Ambulance">
-                <div class="card-body">
-                    <h5 class="card-title">Track Ambulance</h5>
-                    <p class="card-text">Monitor the ambulance's real-time location to ensure timely arrival.</p>
-                        <a href="{{ url_for('user.track_emergency', emergency_id=1) }}" class="btn btn-primary disabled" >Track now</a>
+            <a class="menu-card mb-4" href="{{ url_for('user.feedback') }}" >
+                <div class="menu-card-img">
+                    <img src="{{ url_for('static', filename='images/home/feedback.png') }}" class="menu-card-image" alt="Feedback" style="width: 80%;">
                 </div>
-            </div>
-        </div>
-    {% endif %}
-
-
-
-
-
-    <div class="col-md-4">
-        <div class="card mb-4 shadow-sm">
-            <img src="{{ url_for('static', filename='images/medical_info.png') }}" class="card-img-top" alt="Medical Information">
-            <div class="card-body">
-                <h5 class="card-title">Medical Information</h5>
-                <p class="card-text">Provide essential medical information to EMTs before they arrive on-site.</p>
-                <a href="{{ url_for('user.profile') }}" class="btn btn-primary">Update Profile</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card mb-4 shadow-sm">
-            <img src="{{ url_for('static', filename='images/feedback.png') }}" class="card-img-top" alt="Feedback">
-            <div class="card-body">
-                <h5 class="card-title">Feedback</h5>
-                <p class="card-text">Send feedback on the service to help us improve.</p>
-                <a href="{{ url_for('user.feedback') }}" class="btn btn-primary">Send Feedback</a>
-            </div>
+                <div class="menu-card-body">
+                    <h5 class="menu-card-title">Feedback</h5>
+                    <p class="menu-card-text">Send feedback on the service to help us improve.</p>
+                </div>
+                <div class="menu-card-btn">Send Feedback</div>
+            </a>
         </div>
     </div>
 </div>

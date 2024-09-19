@@ -86,6 +86,11 @@
     padding: 32px;
 }
 
+.profile-title {
+    font-weight: 600;
+    color: var(--primary);
+}
+
 .profile-form .form-group {
     margin: 8px 0;
 }

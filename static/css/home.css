@@ -73,6 +73,95 @@
     background-image: linear-gradient(to left, rgba(33, 45, 217, 0), var(--primary-dark));
 }
 
+.home-menu {
+    margin-top: 70px;
+    background-color: var(--primary);
+    min-height: 776px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu-card {
+    display: block;
+    color: #222;
+    background-color: #fff;
+    border-radius: 12px;
+    position: relative;
+    min-height: 540px;
+    overflow: hidden;
+    transition: 0.3s ease;
+}
+
+.menu-card-disabled:hover {
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.request-message {
+    border-radius: 12px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.menu-card-img {
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 368px;
+    padding-top: 20px;
+}
+
+.menu-card-image {
+    width: 100%;
+}
+
+.menu-card-body {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin: 20px 20px 56px;
+}
+
+.menu-card-body h5 {
+    font-weight: 600;
+}
+
+.menu-card-btn {
+    position: absolute;
+    background-color: var(--primary-dark);
+    width: 100%;
+    bottom: -56px;
+    padding: 16px;
+    border-radius: 12px;
+    color: #fff;
+    text-align: center;
+    transition: 0.3s ease;
+    opacity: 0;
+}
+
+.menu-card-btn.btn-track {
+    background-color: red;
+}
+
+.menu-card-btn.btn-disabled {
+    background-color: #ccc;
+}
+
+.menu-card:hover {
+    transform: scale(1.03);
+}
+
+.menu-card:hover .menu-card-btn {
+    bottom: 0;
+    opacity: 1;
+}
+
+
+
 @keyframes blinkRedGrow {
     0% {
         transform: scale(1.02);
