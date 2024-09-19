@@ -2,49 +2,55 @@
 
 {% block title %}Emergency Request{% endblock %}
 
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/emergency-request.css') }}" />
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <h2>Emergency Request</h2>
-        <form method="POST" novalidate>
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8 er-main">
+        <h2 class="er-title">Emergency Request</h2>
+        <form method="POST" novalidate class="er-form row">
             {{ form.hidden_tag() }}
-            <div class="mb-3">
+            <div class="form-group col-md-6">
                 {{ form.hospital_name.label(class="form-label") }}
                 {{ form.hospital_name(class="form-control", placeholder="Enter hospital name") }}
                 {% for error in form.hospital_name.errors %}
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
-            <div class="mb-3">
+            <div class="form-group col-md-6">
                 {{ form.hospital_address.label(class="form-label") }}
                 {{ form.hospital_address(class="form-control", placeholder="Enter hospital address") }}
                 {% for error in form.hospital_address.errors %}
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
-            <div class="mb-3">
+            <div class="form-group col-md-6">
                 {{ form.user_phone.label(class="form-label") }}
                 {{ form.user_phone(class="form-control", placeholder="Enter mobile phone number") }}
                 {% for error in form.user_phone.errors %}
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
-            <div class="mb-3">
+            <div class="form-group col-md-6">
                 {{ form.pickup_address.label(class="form-label") }}
                 {{ form.pickup_address(class="form-control", placeholder="Enter pickup address") }}
                 {% for error in form.pickup_address.errors %}
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
-            <div class="mb-3">
+            <div class="form-group">
                 {{ form.request_type.label(class="form-label") }}
                 {{ form.request_type(class="form-select") }}
                 {% for error in form.request_type.errors %}
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
-            <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
-            <a href="{{ url_for('user.home') }}" class="btn btn-secondary">Cancel</a>
+            <div class="col-12 er-buttons">
+                <button type="submit" class="btn er-btn">{{ form.submit.label.text }}</button>
+                <a href="{{ url_for('user.home') }}" class="btn er-btn er-btn-secondary">Cancel</a>
+            </div>
         </form>
     </div>
 </div>

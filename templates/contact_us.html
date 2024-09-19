@@ -1,67 +1,68 @@
 {% extends "base.html" %}
 
-{% block content %}
-<div class="container mt-5">
-    <h1 class="mb-4">Contact Us</h1>
+{% block title %}Contact Us{% endblock %}
 
-    
-    <!-- Mẫu Form Liên Hệ -->
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <form action="{{ url_for('user.contact_us') }}" method="POST">
-                {{ form.hidden_tag() }}
-                
-                <div class="mb-3">
-                    {{ form.name.label(class="form-label") }}
-                    {{ form.name(class="form-control", placeholder="Nhập tên của bạn") }}
-                    {% if form.name.errors %}
-                        <div class="text-danger">
-                            {% for error in form.name.errors %}
-                                <small>{{ error }}</small>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-                
-                <div class="mb-3">
-                    {{ form.email.label(class="form-label") }}
-                    {{ form.email(class="form-control", placeholder="Nhập email của bạn") }}
-                    {% if form.email.errors %}
-                        <div class="text-danger">
-                            {% for error in form.email.errors %}
-                                <small>{{ error }}</small>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-                
-                <div class="mb-3">
-                    {{ form.subject.label(class="form-label") }}
-                    {{ form.subject(class="form-control", placeholder="Nhập tiêu đề") }}
-                    {% if form.subject.errors %}
-                        <div class="text-danger">
-                            {% for error in form.subject.errors %}
-                                <small>{{ error }}</small>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-                
-                <div class="mb-3">
-                    {{ form.message.label(class="form-label") }}
-                    {{ form.message(class="form-control", placeholder="Nhập tin nhắn của bạn", rows="5") }}
-                    {% if form.message.errors %}
-                        <div class="text-danger">
-                            {% for error in form.message.errors %}
-                                <small>{{ error }}</small>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-                
-                <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
-            </form>
-        </div>
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/contact.css') }}" />
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8 contact-main">
+        <h2 class="mb-4 contact-title">Contact Us</h2>
+        <form action="{{ url_for('user.contact_us') }}" method="POST" class="contact-form row">
+            {{ form.hidden_tag() }}
+            <div class="form-group col-md-6">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control", placeholder="Enter name") }}
+                {% if form.name.errors %}
+                    <div class="text-danger">
+                        {% for error in form.name.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group col-md-6">
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control", placeholder="Enter email") }}
+                {% if form.email.errors %}
+                    <div class="text-danger">
+                        {% for error in form.email.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group col-12">
+                {{ form.subject.label(class="form-label") }}
+                {{ form.subject(class="form-control", placeholder="Title") }}
+                {% if form.subject.errors %}
+                    <div class="text-danger">
+                        {% for error in form.subject.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group col-12">
+                {{ form.message.label(class="form-label") }}
+                {{ form.message(class="form-control", placeholder="Leave a message", rows="5") }}
+                {% if form.message.errors %}
+                    <div class="text-danger">
+                        {% for error in form.message.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-12 contact-button">
+                <button type="submit" class="btn contact-btn">{{ form.submit.label.text }}</button>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}

@@ -1,0 +1,67 @@
+.er-main {
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 32px;
+}
+
+.er-title {
+    font-weight: 600;
+    color: var(--emergency);
+    margin-bottom: 20px;
+}
+
+.er-form .form-group {
+    margin: 8px 0;
+}
+
+.er-form .form-group label {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.er-form .form-group input,
+.er-form .form-group select {
+    width: 100%;
+    display: block;
+    border: none;
+    border-bottom: 1px solid #999;
+    padding: 6px;
+    box-sizing: border-box;
+    border-radius: 0;
+    outline: none;
+}
+
+.er-form .form-group input:focus,
+.er-form .form-group select:focus {
+    border-bottom: 2px solid var(--primary);
+    outline: none;
+    box-shadow: none;
+}
+
+.er-form .form-group input::placeholder {
+    opacity: 0.5;
+}
+
+.er-form .er-buttons {
+    margin-top: 40px;
+    display: flex;
+    gap: 20px;
+}
+
+.er-form .er-btn {
+    background-color: var(--primary);
+    margin-top: 16px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 18px;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    flex: 1;
+}
+
+.er-form .er-btn.er-btn-secondary {
+    background-color: var(--emergency);
+}
+
+.er-form .er-btn:hover {
+    opacity: 0.7;
+    transform: scaleY(1.05);
+}

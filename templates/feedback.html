@@ -1,20 +1,27 @@
 {% extends "base.html" %}
 
+{% block title %}Feedback{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/feedback.css') }}" />
+{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2 class="mb-4">Feedback</h2>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <div class="mb-3">
-            {{ form.message.label(class="form-label") }}
-            {{ form.message(class="form-control", rows=5) }}
-            {% for error in form.message.errors %}
-                <div class="text-danger">{{ error }}</div>
-            {% endfor %}
-        </div>
-        <div class="mt-4">
-            <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
-        </div>
-    </form>
+<div class="row justify-content-center mt-5 ">
+    <div class="col-md-8 fb-main">
+        <h2 class="mb-4 fb-title">Feedback</h2>
+        <form method="POST" class="fb-form">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.message(class="form-control", rows=5, placeholder="Leave your feedback") }}
+                {% for error in form.message.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mt-4 fb-button">
+                <button type="submit" class="btn fb-btn">{{ form.submit.label.text }}</button>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

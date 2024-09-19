@@ -1,0 +1,75 @@
+.contact-main {
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 32px;
+}
+
+.contact-title {
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+
+.contact-form .form-group {
+    margin: 8px 0;
+}
+
+.contact-form .form-group label {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.contact-form .form-group input {
+    width: 100%;
+    display: block;
+    border: none;
+    border-bottom: 1px solid #999;
+    padding: 6px;
+    box-sizing: border-box;
+    border-radius: 0;
+    outline: none;
+}
+
+.contact-form .form-group input:focus {
+    border-bottom: 2px solid var(--primary);
+    outline: none;
+    box-shadow: none;
+}
+
+.contact-form .form-group textarea {
+    border-color: 1px solid #999;
+}
+
+.contact-form .form-group textarea:focus {
+    outline: none;
+    box-shadow: none;
+    border: 2px solid var(--primary);
+}
+
+.contact-form .form-group input::placeholder,
+.contact-form .form-group textarea::placeholder {
+    opacity: 0.5;
+}
+
+.contact-form .contact-button {
+    display: flex;
+    gap: 20px;
+}
+
+.contact-form .contact-btn {
+    background-color: var(--primary);
+    margin-top: 16px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 18px;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    flex: 1;
+}
+
+.contact-form .contact-btn.contact-btn-secondary {
+    background-color: var(--emergency);
+}
+
+.contact-form .contact-btn:hover {
+    opacity: 0.7;
+    transform: scaleY(1.05);
+}

@@ -1,0 +1,40 @@
+.fb-main {
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 32px;
+}
+
+.fb-title {
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+
+.fb-form .form-group {
+    margin: 8px 0;
+}
+
+.fb-form .form-group textarea {
+    border-color: 1px solid #999;
+}
+
+.fb-form .form-group textarea:focus {
+    outline: none;
+    box-shadow: none;
+    border: 2px solid var(--primary);
+}
+
+.fb-form .form-group textarea::placeholder {
+    opacity: 0.5;
+}
+
+.fb-form .fb-button {
+    text-align: end;
+}
+
+.fb-form .fb-button .fb-btn {
+    background-color: var(--primary);
+    color: #fff;
+    font-weight: 600;
+    padding: 6px 24px;
+}
