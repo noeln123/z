@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from extensions import db
 from models import User, Profile, EmergencyRequest, Feedback, ContactMessage
-from forms import RegistrationForm, LoginForm, EmergencyRequestForm, FeedbackForm, ProfileForm, ContactForm
+from forms import RegistrationForm, LoginForm, EmergencyRequestForm, FeedbackForm, ProfileForm, ContactForm, CancelEmergencyForm
 from . import user_bp  # Using relative import
 
 @user_bp.route('/')
@@ -93,7 +93,7 @@ def emergency_request():
 
     existing_em = EmergencyRequest.query.filter_by(user_id=current_user.id).filter(EmergencyRequest.status != 'Arrived', EmergencyRequest.status != 'Canceled').first()
     if existing_em:
-        flash('Bạn đã có một Emergency Request đang hoạt động.', 'warning')
+        flash('You have having an Emergency Request.', 'warning')
         return redirect(url_for('user.track_emergency', emergency_id=existing_em.id))
 
     if form.validate_on_submit():
@@ -113,15 +113,46 @@ def emergency_request():
     # return render_template('emergency_request.html', form=form)
 
 
-
-@user_bp.route('/track_emergency/<int:emergency_id>')
+@user_bp.route('/cancel_emergency/<int:emergency_id>', methods=['POST'])
 @login_required
-def track_emergency(emergency_id):
-    request_obj = EmergencyRequest.query.get_or_404(emergency_id)
-    ambulance = request_obj.ambulance
-    # Assume you have a function to get the current location of the ambulance
-    # current_location = get_current_location(ambulance.id)
-    return render_template('track_emergency.html', request=request_obj, ambulance=ambulance)
+def cancel_emergency(emergency_id):
+    form = CancelEmergencyForm()
+    if form.validate_on_submit():
+        # Truy xuất EM dựa trên ID
+        emergency = EmergencyRequest.query.get_or_404(emergency_id)
+        
+        # Kiểm tra xem EM có thuộc về người dùng hiện tại không
+        if emergency.user_id != current_user.id:
+            flash('Bạn không có quyền huỷ Emergency Request này.', 'danger')
+            return redirect(url_for('user.track_emergency'))
+        
+        # Kiểm tra trạng thái EM
+        if emergency.status == 'Pending':
+            emergency.status = 'Canceled'
+            db.session.commit()
+            flash('Emergency Request đã được huỷ thành công.', 'success')
+        else:
+            flash('Chỉ có thể huỷ Emergency Request ở trạng thái "Pending".', 'warning')
+        
+        return redirect(url_for('user.track_emergency'))
+    else:
+        flash('Dữ liệu không hợp lệ.', 'danger')
+        return redirect(url_for('user.track_emergency'))
+
+
+
+@user_bp.route('/track_emergency')
+@login_required
+def track_emergency():
+    # Lấy EM hiện tại của người dùng (không bao gồm EM đã "Arrived" hoặc "Canceled")
+    current_em = EmergencyRequest.query.filter_by(user_id=current_user.id)\
+        .filter(EmergencyRequest.status.notin_(['Arrived', 'Canceled']))\
+        .first()
+    
+    # Nếu có EM hiện tại, tạo form hủy EM
+    form = CancelEmergencyForm() if current_em and current_em.status == 'Pending' else None
+    
+    return render_template('track_emergency.html', request=current_em, ambulance=current_em.ambulance if current_em else None, form=form)
 
 @user_bp.route('/feedback', methods=['GET', 'POST'])
 @login_required

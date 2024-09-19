@@ -21,9 +21,6 @@ class EmergencyRequestForm(FlaskForm):
     request_type = SelectField('Request Type', choices=[('Emergency', 'Emergency'), ('Non-Emergency', 'Non-Emergency')], validators=[DataRequired()])
     submit = SubmitField('Submit Request')
     
-class CancelEmergencyForm(FlaskForm):
-    emergency_id = HiddenField('Emergency ID', validators=[DataRequired()])
-    submit = SubmitField('Huỷ Emergency Request')
 
 class FeedbackForm(FlaskForm):
     message = TextAreaField('Feedback', validators=[DataRequired(), Length(min=10)])
@@ -90,3 +87,7 @@ class ContactForm(FlaskForm):
     subject = StringField('Tiêu Đề', validators=[DataRequired(), Length(max=150)])
     message = TextAreaField('Tin Nhắn', validators=[DataRequired(), Length(max=2000)])
     submit = SubmitField('Gửi')
+
+
+class CancelEmergencyForm(FlaskForm):
+    submit = SubmitField('Cancel Emergency Request')

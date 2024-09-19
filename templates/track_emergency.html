@@ -1,97 +1,125 @@
+<!-- templates/track_emergency.html -->
+
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Track Emergency Request</h2>
-<div class="card mb-3">
-    <div class="card-header">
-        Request Information
+<div class="container mt-5">
+    <h2>Track Emergency Request</h2>
+    <div class="card mb-3">
+        <div class="card-header">
+            Request Information
+        </div>
+        <div class="card-body">
+            {% if request %}
+                <p><strong>Request ID:</strong> {{ request.id }}</p>
+                <p><strong>Hospital Name:</strong> {{ request.hospital_name }}</p>
+                <p><strong>Hospital Address:</strong> {{ request.hospital_address }}</p>
+                <p><strong>Phone Number:</strong> {{ request.user_phone }}</p>
+                <p><strong>Pickup Address:</strong> {{ request.pickup_address }}</p>
+                <p><strong>Request Type:</strong> {{ request.request_type }}</p>
+                <p><strong>Status:</strong>
+                    {% if request.status == 'Pending' %}
+                        <span class="badge bg-warning text-dark">Pending</span>
+                    {% elif request.status == 'Dispatched' %}
+                        <span class="badge bg-info">Dispatched</span>
+                    {% elif request.status == 'On the way' %}
+                        <span class="badge bg-primary">On the way</span>
+                    {% elif request.status == 'Arrived' %}
+                        <span class="badge bg-success">Arrived</span>
+                    {% elif request.status == 'Transporting' %}
+                        <span class="badge bg-secondary">Transporting</span>
+                    {% else %}
+                        <span class="badge bg-dark">{{ request.status }}</span>
+                    {% endif %}
+                </p>
+                <p><strong>Ambulance:</strong>
+                    {% if ambulance %}
+                        <strong>{{ ambulance.ambulance_type }}</strong> - {{ ambulance.driver.name }} - {{ ambulance.driver.contact_info }}
+                    {% else %}
+                        <span class="text-muted">Not assigned yet</span>
+                    {% endif %}
+                </p>
+                <p><strong>Ambulance Location:</strong>
+                    {% if ambulance and ambulance.driver %}
+                        {{ ambulance.driver.location }}
+                        <!-- Integrate actual map if needed -->
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </p>
+            {% else %}
+                <p class="text-muted">You don't have any Emergency Request.</p>
+            {% endif %}
+        </div>
     </div>
-    <div class="card-body">
-        <p><strong>Request ID:</strong> {{ request.id }}</p>
-        <p><strong>Hospital Name:</strong> {{ request.hospital_name }}</p>
-        <p><strong>Hospital Address:</strong> {{ request.hospital_address }}</p>
-        <p><strong>Phone Number:</strong> {{ request.user_phone }}</p>
-        <p><strong>Pickup Address:</strong> {{ request.pickup_address }}</p>
-        <p><strong>Request Type:</strong> {{ request.request_type }}</p>
-        <p><strong>Status:</strong>
-            {% if request.status == 'Pending' %}
-                <span class="badge bg-warning text-dark">Pending</span>
-            {% elif request.status == 'Dispatched' %}
-                <span class="badge bg-info">Dispatched</span>
-            {% elif request.status == 'On the way' %}
-                <span class="badge bg-primary">On the way</span>
-            {% elif request.status == 'Arrived' %}
-                <span class="badge bg-success">Arrived</span>
-            {% elif request.status == 'Transporting' %}
-                <span class="badge bg-secondary">Transporting</span>
-            {% else %}
-                <span class="badge bg-dark">{{ request.status }}</span>
-            {% endif %}
-        </p>
-        <p><strong>Ambulance:</strong>
-            {% if ambulance %}
-                <strong>{{ ambulance.ambulance_type }}</strong> - {{ ambulance.driver.name }} - {{ ambulance.driver.contact_info }}
-            {% else %}
-                <span class="text-muted">Not assigned yet</span>
-            {% endif %}
-        </p>
-        <p><strong>Ambulance Location:</strong>
-            {% if ambulance and ambulance.driver %}
-                {{ ambulance.driver.location }}
-                <!-- Integrate actual map if needed -->
-            {% else %}
-                N/A
-            {% endif %}
-        </p>
+
+    {% if ambulance %}
+        <div class="mb-3">
+            <h4>Current Location of the Ambulance</h4>
+            <!-- Integrate Google Maps or OpenStreetMap here -->
+            <div id="map" style="height: 400px;"></div>
+        </div>
+    {% endif %}
+
+    {% if ambulance and ambulance.driver %}
+        <!-- Use Google Maps API to display the map if location information is available -->
+        <script>
+            function initMap() {
+                var location = {lat: {{ ambulance.driver.latitude or 10.8231 }}, lng: {{ ambulance.driver.longitude or 106.6297 }} }; // Replace with actual ambulance location
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 15,
+                    center: location
+                });
+                var marker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    title: 'Ambulance Location'
+                });
+            }
+        </script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap">
+        </script>
+    {% endif %}
+
+    <!-- Nút Cancel Emergency Request -->
+    <div class="mt-4">
+        {% if request and request.status == 'Pending' and form %}
+            <!-- Nút mở modal -->
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmCancelModal">
+                Cancel Emergency Request
+            </button>
+
+            <!-- Bootstrap Modal -->
+            <div class="modal fade" id="confirmCancelModal" tabindex="-1" aria-labelledby="confirmCancelModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="{{ url_for('user.cancel_emergency', emergency_id=request.id) }}" method="POST">
+                            {{ form.hidden_tag() }}
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmCancelModalLabel">Confirm Cancellation</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to cancel this Emergency Request? This action cannot be undone.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, Keep it</button>
+                                <button type="submit" class="btn btn-danger">Yes, Cancel it</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% elif request %}
+            <button type="button" class="btn btn-danger" disabled>Cancel Emergency Request</button>
+        {% endif %}
     </div>
+
+    {% if not request %}
+        <a href="{{ url_for('user.create_emergency') }}" class="btn btn-primary mt-3">Create Emergency Request</a>
+    {% endif %}
+
+    <!-- JavaScript để Xác Nhận Huỷ EM -->
+    <!-- Không cần thêm JavaScript vì Bootstrap Modal đã xử lý việc xác nhận -->
 </div>
-
-{% if ambulance %}
-    <div class="mb-3">
-        <h4>Current Location of the Ambulance</h4>
-        <!-- Integrate Google Maps or OpenStreetMap here -->
-        <div id="map" style="height: 400px;"></div>
-    </div>
-{% endif %}
-
-{% if ambulance and ambulance.driver %}
-    <!-- Use Google Maps API to display the map if location information is available -->
-    <script>
-        function initMap() {
-            var location = {lat: 10.8231, lng: 106.6297}; // Replace with actual ambulance location
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 15,
-                center: location
-            });
-            var marker = new google.maps.Marker({
-                position: location,
-                map: map,
-                title: 'Ambulance Location'
-            });
-        }
-    </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyATHmQqJ6F5zksA7XrL6xnX2PASTGLjYGo&callback=initMap">
-    </script>
-{% endif %}
-
-{% if request.status == 'Pending' %}
-    <form action="{{ url_for('emt.cancel_emergency', emergency_id=request.id) }}" method="POST" id="cancel-form">
-        {{ form.hidden_tag() }}
-        <button type="button" class="btn btn-danger" id="cancel-button" onclick="confirmCancel()">Cancel Emergency Request</button>
-    </form>
-{% else %}
-    <button type="button" class="btn btn-danger" disabled>Cancel Emergency Request</button>
-{% endif %}
-
-<script>
-function confirmCancel() {
-    // Show a confirmation dialog
-    var result = confirm("Are you sure you want to cancel this emergency request?");
-    if (result) {
-        // If the user confirms, submit the form
-        document.getElementById('cancel-form').submit();
-    }
-}
-</script>
-
 {% endblock %}
