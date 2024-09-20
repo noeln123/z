@@ -27,17 +27,30 @@
         animation: blinkBorder 1s infinite;
     }
 </style>
-<div class="container">
+<div class="">
     <div class="jumbotron text-center home-banner">
+        <div class="banner-image">
+            <img src="{{ url_for('static', filename='images/home/banner.jpg') }}" class="banner-img" alt="Emergency Request">
+            <div class="banner-overlay"></div>
+        </div>
+        <div class="container-sm banner-side">
+            <div class="banner-text">
+                <h1 class="display-4 banner-title">Welcome to Rapid Rescue</h1>
+                <p class="lead">A web application that helps you quickly request an ambulance, <br>track the ambulance in real-time, and provide essential medical information to EMTs.</p>
+            </div>
+            <div class="banner-button">
+                <a class="request-btn blinking-border" href="{{ url_for('user.emergency_request') }}" role="button">Emergency Request</a>
+            </div>
+        </div>
         {% if not current_user.is_authenticated %}
-        <div class="home-bannertop p-5 full-round">
+        <!-- <div class="home-bannertop p-5 full-round">
             <h1 class="display-4 banner-title">Welcome to Rapid Rescue</h1>
             <p class="lead">A web application that helps you quickly request an ambulance, track the ambulance in real-time, <br>and provide essential medical information to EMTs.</p>
             <a class="btn btn-lg m-1 register-btn" href="{{ url_for('user.register') }}" role="button">Register Now</a>
             <a class="btn btn-lg m-1 login-btn" href="{{ url_for('user.login') }}" role="button">Login</a>
-        </div>
+        </div> -->
         {% else %}
-        <div class="home-bannertop p-5">
+        <!-- <div class="home-bannertop p-5">
             <h1 class="display-4 banner-title">Welcome to Rapid Rescue</h1>
             <p class="lead">A web application that helps you quickly request an ambulance, track the ambulance in real-time, <br>and provide essential medical information to EMTs.</p>
         </div>
@@ -50,13 +63,14 @@
                 <h3 class="banner-subtitle">Requires medical assistance?<br>Needs to call an ambulance?</h3>
                 <a class="request-btn blinking-border" href="{{ url_for('user.emergency_request') }}" role="button">Emergency Request</a>
             </div>
-        </div>
+        </div> -->
         {% endif %}
     </div>
 </div>
 
 <div class="home-menu">
     <div class="container row">
+        <h2 class="menu-title">Services</h2>
         {% if existing_em %}
             <div class="col-lg-4">
                 <a class="menu-card mb-4 blinking-border menu-card-track"  href="{{ url_for('user.track_emergency', emergency_id=existing_em.id) }}">

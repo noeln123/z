@@ -7,9 +7,9 @@
 {% endblock %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-8 contact-main">
-        <h2 class="mb-4 contact-title">Contact Us</h2>
+<div class="row justify-content-center mt-5 ">
+    <div class="col-lg-4 col-md-8 contact-main">
+        <h2 class="mb-4 contact-title">Get In Touch</h2>
         <form action="{{ url_for('user.contact_us') }}" method="POST" class="contact-form row">
             {{ form.hidden_tag() }}
             <div class="form-group col-md-6">
@@ -63,6 +63,27 @@
                 <button type="submit" class="btn contact-btn">{{ form.submit.label.text }}</button>
             </div>
         </form>
+    </div>
+    <div class="col-lg-4 col-md-8 contact-info">
+        <h2 class="mb-4 contact-title">Contact Us</h2>
+        <div class="info-section">
+            <p>Our company</p>
+            <ul class="contact-company">
+                <li>Phone: <a href="tel: +840123456789">(+84) 0123-456-789</a></li>
+                <li>Address: 8A Ton That Thuyet, Cau Giay, Ha Noi</li>
+                <li>Email: <a href="mailto: company@rapidrescue.com">company@rapidrescue.com</a></li>
+            </ul>
+        </div>
+        <div class="info-section">
+            <p>Our socials</p>
+            <ul class="contact-social-list">
+                <li><a href="https://www.facebook.com" style="color: #316FF6;"><i class="fa-brands fa-facebook"></i></a></li>
+                <li><a href="https://www.youtube.com" style="color: red;"><i class="fa-brands fa-youtube"></i></a></li>
+                <li><a href="https://x.com" style="color: black;"><i class="fa-brands fa-x-twitter"></i></a></li>
+                <li><a href="https://instagram.com" style="color: #df588a;"><i class="fa-brands fa-instagram"></i></a></li>
+                <li><a href="https://github.com" style="color: #24292e;"><i class="fa-brands fa-github"></i></a></li>
+            </ul>
+        </div>
     </div>
 </div>
 {% endblock %}

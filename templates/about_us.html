@@ -1,17 +1,76 @@
 {% extends "base.html" %}
 
+{% block title %}About Us{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about_us.css') }}">
+{% endblock %}
+
 {% block content %}
-<div class="container mt-5">
-    <h1 class="mb-4">Về Chúng Tôi</h1>
-    <p>Chào mừng bạn đến với hệ thống quản lý xe cứu thương của chúng tôi. Chúng tôi cam kết cung cấp dịch vụ y tế khẩn cấp chất lượng cao, nhanh chóng và hiệu quả cho cộng đồng.</p>
-    
-    <h2 class="mt-5">Sứ Mệnh</h2>
-    <p>Sứ mệnh của chúng tôi là đảm bảo rằng mỗi yêu cầu y tế khẩn cấp đều được đáp ứng một cách nhanh chóng và chuyên nghiệp, mang lại sự an tâm và hỗ trợ kịp thời cho những người cần giúp đỡ.</p>
-    
-    <h2 class="mt-5">Đội Ngũ Của Chúng Tôi</h2>
-    <p>Đội ngũ của chúng tôi bao gồm các tài xế chuyên nghiệp, y tá có kinh nghiệm và những người hỗ trợ tận tâm, luôn sẵn sàng phục vụ 24/7.</p>
-    
-    <h2 class="mt-5">Liên Hệ Với Chúng Tôi</h2>
-    <p>Để biết thêm thông tin hoặc có bất kỳ câu hỏi nào, vui lòng truy cập trang <a href="{{ url_for('user.contact_us') }}">Liên Hệ</a>.</p>
+<div class="about-section text-center">
+    <div class="container">
+        <h1 class="about-header mb-4">Welcome to Rapid Rescue!</h1>
+        <p class="about-text">At Rapid Rescue, we are committed to providing fast and reliable ambulance services that save lives. <br>Our platform helps you request ambulances swiftly, ensuring help reaches you when you need it most.</p>
+    </div>
+</div>
+
+<div class="mission-section d-flex align-items-center justify-content-center">
+    <div class="container row d-flex justify-content-center">
+        <div class="mission-image col-md-4">
+            <img src="{{ url_for('static', filename='images/about/mission.png') }}" alt="Mission" class="img-fluid">
+        </div>
+        <div class="mission-text col-md-6">
+            <h2 class="mission-header">Our Mission</h2>
+            <p>We strive to reduce response times in emergencies, making it easier to connect those in need with the nearest medical assistance. Our platform is designed to bring peace of mind during critical moments. By leveraging advanced technology and real-time tracking, we ensure that every second counts in saving lives. Our goal is to create a seamless experience that empowers individuals and families to access urgent care without delay, providing the support they need when it matters most.</p>
+        </div>
+    </div>
+</div>
+
+<div class="team-section text-center">
+    <div class="container">
+        <h2 class="text-center mb-5 team-header">Meet Our Team</h2>
+        <div class="row">
+            <div class="col-md-4 team-member">
+                <div class="team-image-wrapper">
+                    <img src="{{ url_for('static', filename='images/about/team-driver.jpg') }}" alt="Driver">
+                </div>
+                <h4>John Doe</h4>
+                <p>Lead Ambulance Driver</p>
+            </div>
+            <div class="col-md-4 team-member">
+                <div class="team-image-wrapper">
+                    <img src="{{ url_for('static', filename='images/about/team-emt.jpg') }}" alt="Nurse">
+                </div>
+                <h4>Jane Smith</h4>
+                <p>Senior EMT</p>
+            </div>
+            <div class="col-md-4 team-member">
+                <div class="team-image-wrapper">
+                    <img src="{{ url_for('static', filename='images/about/team-support.jpg') }}" alt="Support Staff">
+                </div>
+                <h4>Emily White</h4>
+                <p>24/7 Support Specialist</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="why-choose-section">
+    <div class="container">
+        <h2 class="why-choose-header text-center">Why Choose Rapid Rescue?</h2>
+        <div class="row mt-4">
+            <div class="col-md-6 d-flex justify-content-center align-items-center">
+                <ul class="why-choose-list">
+                    <li><i class="fa-solid fa-truck-fast"></i><strong>Fast and Reliable:</strong> Quick response times during emergencies.</li>
+                    <li><i class="fa-solid fa-location-dot"></i><strong>Real-time Tracking:</strong> Track your ambulance in real-time.</li>
+                    <li><i class="fa-solid fa-clock"></i><strong>24/7 Availability:</strong> Our services are available anytime, anywhere.</li>
+                    <li><i class="fa-solid fa-kit-medical"></i><strong>On-site Care:</strong> EMTs provide critical assistance immediately.</li>
+                </ul>
+            </div>
+            <div class="col-md-6 text-center">
+                <img src="{{ url_for('static', filename='images/about/why-choose.png') }}" alt="Emergency" class="img-fluid">
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

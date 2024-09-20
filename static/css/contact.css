@@ -1,7 +1,10 @@
-.contact-main {
+
+
+.contact-main, .contact-info {
     background-color: #fff;
     border-radius: 16px;
     padding: 32px;
+    margin: 0 12px;
 }
 
 .contact-title {
@@ -72,4 +75,32 @@
 .contact-form .contact-btn:hover {
     opacity: 0.7;
     transform: scaleY(1.05);
+}
+
+.contact-info .info-section {
+    margin-bottom: 24px;
+}
+
+.contact-info .info-section p {
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.contact-info .contact-company {
+    list-style-type: none;
+    padding-left: 8px;
+    opacity: 0.8;
+}
+
+.contact-info .contact-social-list {
+    list-style-type: none;
+    display: flex;
+    padding: 0;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.contact-info .contact-social-list li {
+    font-size: 32px;
 }
