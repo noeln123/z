@@ -1,6 +1,6 @@
 from flask import Flask
 from config import Config
-from extensions import db, login_manager
+from extensions import db, login_manager, socketio
 from routers import user_bp, admin_bp, emt_bp
 from flask_migrate import Migrate
 
@@ -15,6 +15,9 @@ def create_app():
     login_manager.login_message_category = 'info'
     migrate = Migrate(app, db)
 
+    # Khởi tạo socketio
+    socketio.init_app(app, cors_allowed_origins="*")  # Cấu hình CORS nếu cần
+    
     # Đăng ký blueprints
     app.register_blueprint(user_bp)
     app.register_blueprint(admin_bp, url_prefix='/admin')
@@ -30,4 +33,4 @@ def create_app():
 app = create_app()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app, debug=True)

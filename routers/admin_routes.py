@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
-from extensions import db
+from extensions import db, socketio
 from models import Ambulance, Driver, EmergencyRequest
 from forms import UpdateAmbulanceForm
 from . import admin_bp
@@ -66,6 +66,7 @@ def add_ambulance():
 
     # Get all drivers
     drivers = Driver.query.all()
+    form.driver_id.choices = [(driver.id, driver.name) for driver in Driver.query.all()]
     # Create a list of tuples containing driver information and their status
     driver_choices = []
     for driver in drivers:
@@ -73,6 +74,8 @@ def add_ambulance():
         assigned = Ambulance.query.filter_by(driver_id=driver.id).first()
         is_available = not assigned  # If not assigned, the driver is available
         driver_choices.append((driver.id, driver.name, is_available))
+
+    # form.driver_id.choices = driver_choices
 
     if form.validate_on_submit():
         ambulance = Ambulance(
@@ -85,6 +88,7 @@ def add_ambulance():
         db.session.commit()
         flash('Ambulance has been added.', 'success')
         return redirect(url_for('admin.manage_ambulances'))
+
     return render_template('add_ambulance.html', form=form, driver_choices=driver_choices)
 
 @admin_bp.route('/edit_ambulance/<int:ambulance_id>', methods=['GET', 'POST'])
@@ -180,6 +184,10 @@ def dispatch_control(request_id):
             ambulance.status = 'Unavailable'
             # Update the ambulance status if necessary
             db.session.commit()
+            # Emit sự kiện 'status_update' tới phòng tương ứng
+            room = f'emergency_{emergency_request.id}'
+            print(f"admin update {room}")
+            socketio.emit('status_update', {'status': emergency_request.status}, room=room)
             flash('Ambulance has been assigned.', 'success')
             return redirect(url_for('admin.admin_dashboard'))
     return render_template('dispatch_control.html', emergency_request=emergency_request, ambulances=ambulances)

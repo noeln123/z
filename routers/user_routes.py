@@ -123,20 +123,20 @@ def cancel_emergency(emergency_id):
         
         # Kiểm tra xem EM có thuộc về người dùng hiện tại không
         if emergency.user_id != current_user.id:
-            flash('Bạn không có quyền huỷ Emergency Request này.', 'danger')
+            flash('You do not have the right to cancel this Emergency Request.', 'danger')
             return redirect(url_for('user.track_emergency'))
         
         # Kiểm tra trạng thái EM
         if emergency.status == 'Pending':
             emergency.status = 'Canceled'
             db.session.commit()
-            flash('Emergency Request đã được huỷ thành công.', 'success')
+            flash('Emergency Request has been successfully canceled.', 'success')
         else:
-            flash('Chỉ có thể huỷ Emergency Request ở trạng thái "Pending".', 'warning')
+            flash('Emergency Requests can only be canceled in state "Pending".', 'warning')
         
         return redirect(url_for('user.track_emergency'))
     else:
-        flash('Dữ liệu không hợp lệ.', 'danger')
+        flash('Invalid data.', 'danger')
         return redirect(url_for('user.track_emergency'))
 
 

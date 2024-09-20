@@ -2,15 +2,59 @@
 
 {% extends "base.html" %}
 
+
 {% block content %}
+<style>
+    @keyframes blink {
+        0% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.7;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+    @keyframes flicker {
+      0%, 19.9%, 22%, 62.9%, 64%, 64.9%, 70%, 100% {
+        opacity: 0.99;
+        text-shadow: 
+          -1px -1px 0 rgba(255,255,255, 0.4), 
+          1px -1px 0 rgba(255,255,255, 0.4), 
+          -1px 1px 0 rgba(255,255,255, 0.4), 
+          1px 1px 0 rgba(255,255,255, 0.4), 
+          0 -2px 8px, //default color
+          0 0 2px, //default color
+          0 0 5px #ff7e00, 
+          0 0 15px #ff4444, 
+          0 0 2px #ff7e00, 
+          0 2px 3px #000;
+      }
+      20%, 21.9%, 63%, 63.9%, 65%, 69.9% {
+        opacity: 0.4;
+        text-shadow: none;
+      }
+    }
+    .blinking-route {
+        animation: blink 2s infinite !important;
+        /*opacity: 0.2;*/
+    }
+</style>
+
+
 <div class="container mt-5">
-    <h2>Track Emergency Request</h2>
+    <h2 class="">Track Emergency Request</h2>
     <div class="card mb-3">
         <div class="card-header">
             Request Information
         </div>
         <div class="card-body">
             {% if request %}
+                <!-- Các trường ẩn để JavaScript sử dụng -->
+                <input type="hidden" id="emergency-id" value="{{ request.id }}">
+                <input type="hidden" id="emergency-status" value="{{ request.status }}">
+
                 <p><strong>Request ID:</strong> {{ request.id }}</p>
                 <p><strong>Hospital Name:</strong> {{ request.hospital_name }}</p>
                 <p><strong>Hospital Address:</strong> {{ request.hospital_address }}</p>
@@ -18,19 +62,23 @@
                 <p><strong>Pickup Address:</strong> {{ request.pickup_address }}</p>
                 <p><strong>Request Type:</strong> {{ request.request_type }}</p>
                 <p><strong>Status:</strong>
-                    {% if request.status == 'Pending' %}
-                        <span class="badge bg-warning text-dark">Pending</span>
-                    {% elif request.status == 'Dispatched' %}
-                        <span class="badge bg-info">Dispatched</span>
-                    {% elif request.status == 'On the way' %}
-                        <span class="badge bg-primary">On the way</span>
-                    {% elif request.status == 'Arrived' %}
-                        <span class="badge bg-success">Arrived</span>
-                    {% elif request.status == 'Transporting' %}
-                        <span class="badge bg-secondary">Transporting</span>
-                    {% else %}
-                        <span class="badge bg-dark">{{ request.status }}</span>
-                    {% endif %}
+                    <span id="status-badge" class="badge
+                        {% if request.status == 'Pending' %}
+                            bg-warning text-dark
+                        {% elif request.status == 'Dispatched' %}
+                            bg-info
+                        {% elif request.status == 'On the way' %}
+                            bg-primary
+                        {% elif request.status == 'Arrived' %}
+                            bg-success
+                        {% elif request.status == 'Transporting' %}
+                            bg-secondary
+                        {% else %}
+                            bg-dark
+                        {% endif %}
+                    ">
+                        {{ request.status }}
+                    </span>
                 </p>
                 <p><strong>Ambulance:</strong>
                     {% if ambulance %}
@@ -42,7 +90,7 @@
                 <p><strong>Ambulance Location:</strong>
                     {% if ambulance and ambulance.driver %}
                         {{ ambulance.driver.location }}
-                        <!-- Integrate actual map if needed -->
+                        <!-- Thêm bản đồ nếu cần -->
                     {% else %}
                         N/A
                     {% endif %}
@@ -54,32 +102,16 @@
     </div>
 
     {% if ambulance %}
-        <div class="mb-3">
-            <h4>Current Location of the Ambulance</h4>
-            <!-- Integrate Google Maps or OpenStreetMap here -->
-            <div id="map" style="height: 400px;"></div>
+        <div class="mb-3 position-relative">
+            <h4>Current Location of the Ambulance
+                <span id="distance-to-ambulance"></span>
+                <span id="estimated-time"></span>
+            </h4>
+            <!-- Bản đồ Leaflet -->
+            <div id="map" style="height: 400px"></div>
         </div>
     {% endif %}
-
-    {% if ambulance and ambulance.driver %}
-        <!-- Use Google Maps API to display the map if location information is available -->
-        <script>
-            function initMap() {
-                var location = {lat: {{ ambulance.driver.latitude or 10.8231 }}, lng: {{ ambulance.driver.longitude or 106.6297 }} }; // Replace with actual ambulance location
-                var map = new google.maps.Map(document.getElementById('map'), {
-                    zoom: 15,
-                    center: location
-                });
-                var marker = new google.maps.Marker({
-                    position: location,
-                    map: map,
-                    title: 'Ambulance Location'
-                });
-            }
-        </script>
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap">
-        </script>
-    {% endif %}
+    
 
     <!-- Nút Cancel Emergency Request -->
     <div class="mt-4">
@@ -116,10 +148,26 @@
     </div>
 
     {% if not request %}
-        <a href="{{ url_for('user.create_emergency') }}" class="btn btn-primary mt-3">Create Emergency Request</a>
+        <a href="{{ url_for('user.home') }}" class="btn btn-primary mt-3">Create Emergency Request</a>
     {% endif %}
 
-    <!-- JavaScript để Xác Nhận Huỷ EM -->
-    <!-- Không cần thêm JavaScript vì Bootstrap Modal đã xử lý việc xác nhận -->
+    <a href="{{ url_for('user.home') }}" class="btn btn-secondary mt-3">Back to home</a>
+    <script>
+        const ambulanceIconUrl = "{{ url_for('static', filename='images/ambulances.png') }}";
+        const userIconUrl = "{{ url_for('static', filename='images/user.svg') }}";
+    </script>
+    <!-- Include SocketIO client and track_emergency.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js" integrity="sha512-luMnTJZ7oEchNDZAtQhgjomP1eZefnl82ruTH/3Oj/Yu5qYtwL7+dVRccACS/Snp1lFXq188XFipHKYE75IaQQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- Thêm Leaflet Routing Machine -->
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <!-- Thêm plugin để hỗ trợ OpenRouteService -->
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-openrouteservice.js"></script>
+    <script src="{{ url_for('static', filename='js/track_emergency.js') }}"></script>
 </div>
+{% endblock %}
+
+{% block scripts %}
+    <!-- Bạn có thể thêm các script bổ sung tại đây nếu cần -->
 {% endblock %}

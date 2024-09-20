@@ -62,7 +62,7 @@ class UpdateAmbulanceForm(FlaskForm):
         ('Full', 'Full'),
     ], validators=[DataRequired()])
     
-    driver_id = SelectField('Driver', coerce=int)
+    driver_id = SelectField('Driver', coerce=int, validators=[DataRequired()])
     
     submit = SubmitField('Add Ambulance')
 

@@ -6,3 +6,7 @@ Flask-Migrate
 Werkzeug
 python-dotenv
 email_validator
+flask-socketio<6
+python-socketio<6
+eventlet
+socketio
