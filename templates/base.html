@@ -28,7 +28,7 @@
                             <a class="nav-link" href="{{ url_for('user.profile') }}">Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('user.emergency_request') }}">Emergency Request</a>
+                            <a class="nav-link nav-item-red" href="{{ url_for('user.emergency_request') }}">Emergency Request</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('user.feedback') }}">Feedback</a>
@@ -43,7 +43,7 @@
                             </li>
                         {% endif %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('user.logout') }}">Logout</a>
+                            <a class="nav-link nav-item-red" href="{{ url_for('user.logout') }}">Logout</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
@@ -64,7 +64,7 @@
         </div>
     </nav>
     
-    <div class="mt-4">
+    <div class="page-content">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -77,6 +77,38 @@
         {% endwith %}
         {% block content %}{% endblock %}
     </div>
+    <footer class="text-center text-lg-start" >
+        <div class="container footer-content">
+            <div class="row justify-content-center">
+                <div class="col-md-9 text-center">
+                    <div class="footer-logo mb-4">
+                        <a href="#">Rapid Rescue</a>
+                    </div>
+                    <ul class="footer-links mb-5">
+                        <li><a href="{{ url_for('user.profile') }}">Profile</a></li>
+                        <li><a href="{{ url_for('user.emergency_request') }}">Emergency Request</a></li>
+                        <li><a href="{{ url_for('user.about_us') }}">About Us</a></li>
+                        <li><a href="{{ url_for('user.contact_us') }}">Contact Us</a></li>
+                        <li><a href="{{ url_for('user.feedback') }}">Leave Feedback</a></li>
+                    </ul>
+    
+                    <div class="social mb-4">
+                        <h3>Stay in touch</h3>
+                        <ul class="social-list">
+                            <li class="social-icon"><a href="https://www.facebook.com" style="color: blue;"><i class="fa-brands fa-facebook"></i></a></li>
+                            <li class="social-icon"><a href="https://www.youtube.com" style="color: red;"><i class="fa-brands fa-youtube"></i></a></li>
+                            <li class="social-icon"><a href="https://x.com" style="color: black;"><i class="fa-brands fa-x-twitter"></i></a></li>
+                            <li class="social-icon"><a href="https://instagram.com" style="color: #df588a;"><i class="fa-brands fa-instagram"></i></a></li>
+                            <li class="social-icon"><a href="https://github.com" style="color: #5e5e5e;"><i class="fa-brands fa-github"></i></a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-copyright">
+                        <p class="mb-0"><small>&copy; Rapid Rescue. All Rights Reserved.</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
 </body>
 <!-- Bootstrap JS Bundle with Popper -->

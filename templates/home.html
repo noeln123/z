@@ -14,7 +14,7 @@
             border-color: var(--emergency);
         }
         50% {
-            border-color: transparent;
+            border-color: white;
         }
         100% {
             border-color: var(--emergency);
@@ -23,7 +23,7 @@
 
     /* Áp dụng hiệu ứng nhấp nháy cho viền của card */
     .blinking-border {
-        border: 2px solid red;
+        border: 3px solid #fff;
         animation: blinkBorder 1s infinite;
     }
 </style>
@@ -48,7 +48,7 @@
             </div>
             <div class="banner-text">
                 <h3 class="banner-subtitle">Requires medical assistance?<br>Needs to call an ambulance?</h3>
-                <a class="btn btn-primary btn-lg request-btn blinking-grow" href="{{ url_for('user.emergency_request') }}" role="button">Emergency Request</a>
+                <a class="request-btn blinking-border" href="{{ url_for('user.emergency_request') }}" role="button">Emergency Request</a>
             </div>
         </div>
         {% endif %}
@@ -58,7 +58,7 @@
 <div class="home-menu">
     <div class="container row">
         {% if existing_em %}
-            <div class="col-md-4">
+            <div class="col-lg-4">
                 <a class="menu-card mb-4 blinking-border menu-card-track"  href="{{ url_for('user.track_emergency', emergency_id=existing_em.id) }}">
                     <div class="alert alert-danger text-center m-0 request-message" role="alert">
                         You are requesting an Emergency Request!
@@ -74,7 +74,7 @@
                 </a>
             </div>
         {% else %}
-            <div class="col-md-4">
+            <div class="col-lg-4">
                 <div class="menu-card mb-4 menu-card-disabled">
                     <div class="menu-card-img">
                         <img src="{{ url_for('static', filename='images/home/track-ambulance.png') }}" class="menu-card-image" alt="Track Ambulance" style="width: 180%;">
@@ -88,7 +88,7 @@
             </div>
         {% endif %}
         
-        <div class="col-md-4">
+        <div class="col-lg-4">
             <a class="menu-card mb-4" href="{{ url_for('user.profile') }}">
                 <div class="menu-card-img">
                     <img src="{{ url_for('static', filename='images/home/medical-info.jpg') }}" class="menu-card-image" alt="Medical Information">
@@ -100,7 +100,7 @@
                 <div class="menu-card-btn">Update Profile</div>
             </a>
         </div>
-        <div class="col-md-4">
+        <div class="col-lg-4">
             <a class="menu-card mb-4" href="{{ url_for('user.feedback') }}" >
                 <div class="menu-card-img">
                     <img src="{{ url_for('static', filename='images/home/feedback.jpeg') }}" class="menu-card-image" alt="Feedback" style="width: 80%;">
