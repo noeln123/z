@@ -220,7 +220,6 @@ def ambulance_types():
 
 @user_bp.route('/costs')
 def costs():
-    # Assume you have a table or configuration to store cost information
     return render_template('costs.html')
 
 @user_bp.route('/driver_list')
