@@ -107,3 +107,39 @@
         flex-direction: column;
     }
 }
+
+@media (max-width: 1023.99px) {
+    .about-header {
+        font-size: 64px;
+    }
+
+    .about-text {
+        font-size: 32px;
+    }
+
+    .mission-header, .team-header, .why-choose-header {
+        font-size: 48px;
+    }
+
+    .mission-section .container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .mission-text p, .team-member p, .why-choose-list li {
+        font-size: 24px;
+    }
+
+    .team-member h4 {
+        font-size: 32px;
+    }
+
+    .team-image-wrapper img {
+        width: 300px;
+        height: 300px;
+    }
+
+    .why-choose-list li i {
+        margin-right: 16px;
+    }
+}

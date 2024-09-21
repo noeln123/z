@@ -98,6 +98,7 @@
     font-size: 48px;
     font-weight: 600;
     text-align: center;
+    margin-bottom: 32px;
 }
 
 .menu-card {
@@ -177,4 +178,66 @@
 .menu-card:hover .menu-card-btn {
     bottom: 0;
     opacity: 1;
+}
+
+@media (max-width: 1024px) {
+
+    .banner-image {
+        top: -50px;
+    }
+
+    .banner-side {
+        padding-top: 40px;
+        width: 70%;
+    }
+
+    .banner-text .banner-title {
+        font-size: 60px;
+    }
+
+    .banner-text .lead {
+        font-size: 28px;
+    }
+
+    .banner-button .register-btn,
+    .banner-button .login-btn,
+    .banner-button .request-btn {
+        width: 100%;
+        margin: 8px 0;
+        padding: 20px;
+        font-size: 28px;
+    }
+
+    .home-menu {
+        padding-top: 60px;
+    }
+
+    .menu-card {
+        min-height: 500px;
+    }
+
+    .request-message {
+        font-size: 24px;
+    }
+
+    .menu-card-title {
+        font-size: 30px;
+    }
+
+    .menu-card-text {
+        font-size: 22px;
+    }
+
+    .menu-card-img {
+        min-height: 350px;
+        width: 70%;
+        margin: auto;
+    }
+
+    .menu-card-btn {
+        bottom: 0;
+        opacity: 1;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
 }

@@ -69,4 +69,61 @@
 .em-buttons {
     text-align: center;
     margin-top: 32px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.em-buttons .em-create-btn {
+    background-color: var(--primary);
+    color: #fff;
+}
+
+.em-buttons .em-create-btn:hover {
+    background-color: #20a1d8da;
+}
+
+@media (max-width: 1024px) {
+    .container.em {
+        max-width: 860px;
+    }
+
+    .em-container {
+        width: 100%;
+    }
+
+    .em-title {
+        text-align: center;
+        font-size: 44px;
+    }
+
+    .em-card {
+        font-size: 32px;
+    }
+
+    .em-card-header {
+        padding: 20px 40px;
+    }
+
+    .em-buttons {
+        width: 100%;
+        justify-content: space-evenly;
+    }
+
+    .em-buttons .btn {
+        font-size: 24px;
+        padding: 10px 20px;
+        flex: 2;
+    }
+
+    .em-buttons .btn.btn-danger,
+    .em-buttons .btn.btn-secondary {
+        flex: 1;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1023.99px) {
+    .request-info {
+        display: block;
+    }
 }
