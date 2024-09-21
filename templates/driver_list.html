@@ -1,37 +1,59 @@
-<!-- templates/drivers.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Driver List</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container mt-5">
-        <h1 class="mb-4">Driver List</h1>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Driver Name</th>
-                    <th scope="col">Contact Info</th>
-                    <th scope="col">Location</th>
-                    <th scope="col">Ambulance</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for driver in drivers %}
-                <tr>
-                    <td>{{ driver.id }}</td>
-                    <td>{{ driver.name }}</td>
-                    <td>{{ driver.contact_info }}</td>
-                    <td>{{ driver.location }}</td>
-                    <td>{{ driver.ambulance.ambulance_type if driver.ambulance else 'None' }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Drivers{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ambulance-driver.css') }}" />
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-title">Drivers</h1>
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="main-box clearfix">
+				<div class="table-responsive">
+					<table class="table driver-list">
+						<thead>
+							<tr>
+								<th><span>Driver Name</span></th>
+								<th><span>Contact Info</span></th>
+								<th><span>Location</span></th>
+                                <th><span>Ambulance Type</span></th>
+							</tr>
+						</thead>
+						<tbody>
+                            {% for driver in drivers %}
+							<tr>
+								<td class="first-column">
+									<img src="{{ url_for('static', filename='images/ambulance-driver/driver-ava.png') }}" alt="">
+									<div class="driver-view">
+										<h2 class="driver-link">{{ driver.name }}</h2>
+										<span class="driver-subhead">ID: {{ driver.id }}</span> <!-- ID -->
+									</div>
+								</td>
+								<td>{{ driver.contact_info }}</td>
+								<td>{{ driver.location }}</td>
+                                <td>{{ driver.ambulance.ambulance_type if driver.ambulance else 'None' }}</td>
+                            </tr>
+                            {% endfor %}
+						</tbody>
+					</table>
+				</div>
+				<div class="pagination-container">
+					<ul class="pagination pull-right">
+						<li><a href=""><i class="fa fa-chevron-left"></i></a></li>
+						<li class="page-current"><a href="">1</a></li>
+						<li><a href="">2</a></li>
+						<li><a href="">3</a></li>
+						<li><a href="">4</a></li>
+						<li><a href="">5</a></li>
+						<li><a href=""><i class="fa fa-chevron-right"></i></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+

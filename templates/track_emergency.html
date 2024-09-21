@@ -75,55 +75,63 @@
                     <input type="hidden" id="emergency-status" value="{{ request.status }}">
 
                     <div class="em-card-info">
-                        <div class="em-top-info">
-                            <div class="em-top-group">
+                        <div class="em-info-section">
+                            <div class="em-group">
                                 <p><strong>Request ID:</strong> {{ request.id }}</p>
                                 <p><strong>Request Type:</strong> {{ request.request_type }}</p>
                             </div>
-                            <div class="em-top-group">
+                            <div class="em-group">
                                 <p><strong>Hospital Name:</strong> {{ request.hospital_name }}</p>
                                 <p><strong>Phone Number:</strong> {{ request.user_phone }}</p>
                             </div>
-                            <div class="em-top-group">
+                            <div class="em-group">
                                 <p><strong>Hospital Address:</strong> {{ request.hospital_address }}</p>
                                 <p><strong>Pickup Address:</strong> {{ request.pickup_address }}</p>
                             </div>
                         </div>
                         <hr>
-                        <p><strong>Status:</strong>
-                            <span id="status-badge" class="badge
-                                {% if request.status == 'Pending' %}
-                                    request-pending
-                                {% elif request.status == 'Dispatched' %}
-                                    bg-info
-                                {% elif request.status == 'On the way' %}
-                                    bg-primary
-                                {% elif request.status == 'Arrived' %}
-                                    bg-success
-                                {% elif request.status == 'Transporting' %}
-                                    bg-secondary
+                        <div class="em-info-section">
+                            <div class="em-group">
+                                <p><strong>Status:</strong>
+                                    <span id="status-badge" class="badge
+                                        {% if request.status == 'Pending' %}
+                                            request-pending
+                                        {% elif request.status == 'Dispatched' %}
+                                            bg-info
+                                        {% elif request.status == 'On the way' %}
+                                            bg-primary
+                                        {% elif request.status == 'Arrived' %}
+                                            bg-success
+                                        {% elif request.status == 'Transporting' %}
+                                            bg-secondary
+                                        {% else %}
+                                            bg-dark
+                                        {% endif %}
+                                    ">
+                                        {{ request.status }}
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="em-group">
+                                <p><strong>Ambulance:</strong>
+                                {% if ambulance %}
+                                    <strong>{{ ambulance.ambulance_type }}</strong> - {{ ambulance.driver.name }} - {{ ambulance.driver.contact_info }}
                                 {% else %}
-                                    bg-dark
+                                    <span class="text-muted">Not assigned yet</span>
                                 {% endif %}
-                            ">
-                                {{ request.status }}
-                            </span>
-                        </p>
-                        <p><strong>Ambulance:</strong>
-                        {% if ambulance %}
-                            <strong>{{ ambulance.ambulance_type }}</strong> - {{ ambulance.driver.name }} - {{ ambulance.driver.contact_info }}
-                        {% else %}
-                            <span class="text-muted">Not assigned yet</span>
-                        {% endif %}
-                        </p>
-                        <p><strong>Ambulance Location:</strong>
-                            {% if ambulance and ambulance.driver %}
-                                {{ ambulance.driver.location }}
-                                <!-- Thêm bản đồ nếu cần -->
-                            {% else %}
-                                N/A
-                            {% endif %}
-                        </p>
+                                </p>
+                            </div>
+                            <div class="em-group">
+                                <p><strong>Ambulance Location:</strong>
+                                    {% if ambulance and ambulance.driver %}
+                                        {{ ambulance.driver.location }}
+                                        <!-- Thêm bản đồ nếu cần -->
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
                     {% else %}
                         <p class="text-muted">You don't have any Emergency Request.</p>
                     {% endif %}
@@ -144,7 +152,7 @@
         
 
         <!-- Nút Cancel Emergency Request -->
-        <div class="mt-4 em-buttons">
+        <div class="em-buttons">
             {% if request and request.status == 'Pending' and form %}
                 <!-- Nút mở modal -->
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmCancelModal">
