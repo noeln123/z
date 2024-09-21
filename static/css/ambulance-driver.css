@@ -1,0 +1,110 @@
+.page-title {
+	margin-bottom: 20px;
+	font-weight: 600;
+}
+
+.ambulance-list tbody td > img,
+.driver-list tbody td > img {
+    position: relative;
+	max-width: 75px;
+	float: left;
+	margin-right: 15px;
+}
+.ambulance-list tbody td .ambulance-link,
+.driver-list tbody td .driver-link {
+	display: block;
+	font-size: 20px;
+	padding-top: 3px;
+}
+.ambulance-list tbody td .ambulance-subhead,
+.driver-list tbody td .driver-subhead {
+	font-size: 14px;
+	font-style: italic;
+}
+
+/* TABLES */
+.table {
+    border-collapse: separate;
+}
+
+.table tbody > tr > td {
+	background: #f5f5f5;
+	border-top: 10px solid #fff;
+	vertical-align: middle;
+	padding: 12px 8px 12px 12px;
+}
+
+.table tbody tr .first-column {
+	padding-left: 24px;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.table thead > tr > th span {
+	display: inline-block;
+	padding: 0 12px;
+	padding-bottom: 5px;
+	font-weight: 400;
+	color: #777;
+}
+
+.table tbody td .table-status {
+	padding: 8px 12px;
+	border-radius: 8px;
+	font-weight: 600;
+	color: #fff;
+}
+
+.table tbody td .table-status.status-available {
+	background-color: #5DBE3F;
+}
+
+.table tbody td .table-status.status-pending {
+	background-color: #FFDE00;
+	color: #666
+}
+
+.table tbody td .table-status.status-deploy {
+	background-color: var(--emergency);
+}
+
+.table tbody td .table-status.status-inactive {
+	background-color: #aaa;
+}
+
+.pagination-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 24px;
+}
+
+.pagination-container ul li {
+	border: 1px solid #ccc;
+	display: block;
+	width: 40px;
+	height: 40px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 0 4px;
+	border-radius: 4px;
+	cursor: pointer;
+	transition: 0.2s ease;
+}
+
+.pagination-container ul li a {
+	text-decoration: none;
+	color: var(--primary);
+}
+
+.pagination-container ul li.page-current,
+.pagination-container ul li:hover {
+	background-color: var(--primary);
+}
+
+.pagination-container ul li.page-current a,
+.pagination-container ul li:hover a {
+	color: #fff;
+}

@@ -36,6 +36,7 @@
 
 .em-title {
     font-weight: 600;
+    margin-bottom: 32px;
 }
 
 .em-card {
@@ -57,14 +58,15 @@
     padding: 16px;
 }
 
-.em-top-info {
+.em-info-section {
     display: flex;
 }
 
-.em-top-group {
+.em-group {
     flex: 1
 }
 
 .em-buttons {
     text-align: center;
+    margin-top: 32px;
 }

@@ -82,11 +82,11 @@ class UpdateStatusForm(FlaskForm):
 
 
 class ContactForm(FlaskForm):
-    name = StringField('Tên', validators=[DataRequired(), Length(max=100)])
+    name = StringField('Name', validators=[DataRequired(), Length(max=100)])
     email = StringField('Email', validators=[DataRequired(), Email(), Length(max=120)])
-    subject = StringField('Tiêu Đề', validators=[DataRequired(), Length(max=150)])
-    message = TextAreaField('Tin Nhắn', validators=[DataRequired(), Length(max=2000)])
-    submit = SubmitField('Gửi')
+    subject = StringField('Title', validators=[DataRequired(), Length(max=150)])
+    message = TextAreaField('Message', validators=[DataRequired(), Length(max=2000)])
+    submit = SubmitField('Send')
 
 
 class CancelEmergencyForm(FlaskForm):
