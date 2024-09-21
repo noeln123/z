@@ -26,7 +26,7 @@ def create_app():
     # Import các models để Flask-Migrate có thể nhận diện chúng
     with app.app_context():
         from models import User, Profile, Ambulance, Driver, EmergencyRequest, Feedback
-        db.create_all()  # Chỉ chạy lần đầu hoặc sử dụng Flask-Migrate
+        # db.create_all()  # Chỉ chạy lần đầu hoặc sử dụng Flask-Migrate
 
     return app
 

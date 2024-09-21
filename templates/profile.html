@@ -12,8 +12,13 @@
         <div class="profile-panel">
             <div class="user-heading">
                 <img src="{{ url_for('static', filename='images/profile/avatar.jpg') }}" alt="" class="user-ava">
-                <h3 class="user-name">Phong Nguyen</h3>
-                <p class="user-phone">0965140406</p>
+                {% if current_user.profile %}
+                    <h3 class="user-name">{{ current_user.profile.full_name }}</h3>
+                    <p class="user-phone">{{ current_user.profile.phone_number }}</p>
+                {% else %}
+                    <h3 class="user-name">No information</h3>
+                    <p class="user-phone">No Information</p>
+                {% endif %}
             </div>
             <div class="user-link-list">
                 <ul>

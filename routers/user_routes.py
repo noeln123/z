@@ -96,7 +96,17 @@ def emergency_request():
         flash('You have having an Emergency Request.', 'warning')
         return redirect(url_for('user.track_emergency', emergency_id=existing_em.id))
 
+    if current_user.profile:
+        form.user_phone.data = current_user.profile.phone_number
+        form.pickup_address.data = current_user.profile.address
+
     if form.validate_on_submit():
+        # If Javascript not correctly
+        if form.request_type.data == 'Emergency':
+            form.hospital_name.data = "Auto Find"
+            form.hospital_address.data = "Auto Find"
+            form.pickup_address.data = "Auto Find"
+
         request = EmergencyRequest(
             hospital_name=form.hospital_name.data,
             hospital_address=form.hospital_address.data,

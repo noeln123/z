@@ -182,13 +182,15 @@ def dispatch_control(request_id):
             emergency_request.ambulance_id = ambulance.id
             emergency_request.status = 'Dispatched'
             ambulance.status = 'Unavailable'
-            # Update the ambulance status if necessary
             db.session.commit()
+
             # Emit sự kiện 'status_update' tới phòng tương ứng
             room = f'emergency_{emergency_request.id}'
             print(f"admin update {room}")
             socketio.emit('status_update', {'status': emergency_request.status}, room=room)
+            
             flash('Ambulance has been assigned.', 'success')
+
             return redirect(url_for('admin.admin_dashboard'))
     return render_template('dispatch_control.html', emergency_request=emergency_request, ambulances=ambulances)
 

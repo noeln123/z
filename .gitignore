@@ -1,0 +1,22 @@
+# Ignore Python bytecode files
+__pycache__/
+*.py[cod]
+
+# Ignore virtual environment directories
+venv/
+env/
+
+# Ignore logs and temp files
+*.log
+*.tmp
+
+# Ignore specific IDE or editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Ignore build directories
+build/
+dist/
+*.egg-info/

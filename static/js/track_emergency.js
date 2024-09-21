@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 profile: 'car'
             }),
             lineOptions: {
-                styles: [{ color: 'red', opacity: 0.8, weight: 4, className: 'blinking-route' }]
+                styles: [{ color: 'red', opacity: 1, weight: 5, className: 'blinking-route' }]
             },
             createMarker: function() { return null; },
             addWaypoints: false,

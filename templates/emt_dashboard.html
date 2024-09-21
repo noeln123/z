@@ -72,7 +72,7 @@
                                 <button class="btn btn-info">Join EM</button>
                             </form>
                         {% else %}
-                            <button class="btn btn-info disabled">Already join</button>
+                            <button class="btn btn-info disabled">Join EM</button>
                         {% endif %}
                     {% endif %}
                 </td>
@@ -89,7 +89,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const emergencyId = document.getElementById('emergency_id').value;
-            const joined = document.getElementById('joined').value
+            const joined = document.getElementById('joined').value;
             if (joined !== "False") {
                 if (navigator.geolocation) {
                     navigator.geolocation.watchPosition((position) => {

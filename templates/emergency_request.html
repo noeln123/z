@@ -7,6 +7,33 @@
 {% endblock %}
 
 {% block content %}
+<style>
+    .readonly-field {
+        background-color: #e9ecef; /* Màu nền khi readonly */
+        cursor: not-allowed;       /* Con trỏ khi readonly */
+        pointer-events: none;
+        transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+    }
+
+    .editable-field {
+        background-color: #ffffff; /* Màu nền khi có thể chỉnh sửa */
+        cursor: text;              /* Con trỏ khi có thể chỉnh sửa */
+        pointer-events: auto; 
+        transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+    }
+    input, select {
+        border: 1px solid #ced4da;
+        padding: 0.375rem 0.75rem;
+        border-radius: 0.25rem;
+        transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+    }
+    /* Thêm hiệu ứng khi focus vào các trường */
+    input:focus, select:focus {
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    }
+</style>
 <div class="row justify-content-center mt-5">
     <div class="col-md-8 er-main">
         <h2 class="er-title">Emergency Request</h2>
@@ -14,14 +41,14 @@
             {{ form.hidden_tag() }}
             <div class="form-group col-md-6">
                 {{ form.hospital_name.label(class="form-label") }}
-                {{ form.hospital_name(class="form-control", placeholder="Enter hospital name") }}
+                {{ form.hospital_name(class="form-control", placeholder="Enter hospital name",id="hospital_name") }}
                 {% for error in form.hospital_name.errors %}
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
             <div class="form-group col-md-6">
                 {{ form.hospital_address.label(class="form-label") }}
-                {{ form.hospital_address(class="form-control", placeholder="Enter hospital address") }}
+                {{ form.hospital_address(class="form-control", placeholder="Enter hospital address", id="hospital_address") }}
                 {% for error in form.hospital_address.errors %}
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
@@ -35,14 +62,14 @@
             </div>
             <div class="form-group col-md-6">
                 {{ form.pickup_address.label(class="form-label") }}
-                {{ form.pickup_address(class="form-control", placeholder="Enter pickup address") }}
+                {{ form.pickup_address(class="form-control", placeholder="Enter pickup address", id="pickup_address") }}
                 {% for error in form.pickup_address.errors %}
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
             <div class="form-group">
                 {{ form.request_type.label(class="form-label") }}
-                {{ form.request_type(class="form-select") }}
+                {{ form.request_type(class="form-select", id="request_type") }}
                 {% for error in form.request_type.errors %}
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
@@ -53,5 +80,50 @@
             </div>
         </form>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            function toggleFields() {
+                var requestType = $('#request_type').val();
+                if (requestType === 'Emergency') {
+                    // Đặt các trường thành readonly và thay đổi màu nền
+                    setReadonly($('#hospital_name'), true, '📍 Auto Find');
+                    setReadonly($('#hospital_address'), true, '📍 Auto Find');
+                    setReadonly($('#pickup_address'), true, '📍 Auto Find');
+                } else {
+                    // Đặt các trường trở lại editable và xóa giá trị
+                    setReadonly($('#hospital_name'), false, '');
+                    setReadonly($('#hospital_address'), false, '');
+                    setReadonly($('#pickup_address'), false, '');
+                }
+            }
+
+            function setReadonly(element, isReadonly, value) {
+                element.prop('readonly', isReadonly);
+                element.val(value);
+                if (isReadonly) {
+                    element.removeClass('editable-field').addClass('readonly-field');
+                } else {
+                    element.removeClass('readonly-field').addClass('editable-field');
+                }
+            }
+
+            // Hàm ngăn chặn sự kiện click
+            function preventClick(event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            // Thiết lập trạng thái ban đầu khi tải trang
+            toggleFields();
+
+            // Gắn sự kiện thay đổi vào trường request_type
+            $('#request_type').change(function() {
+                toggleFields();
+            });
+        });
+    </script>
+
 </div>
 {% endblock %}
