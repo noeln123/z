@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Pricing{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/costs.css') }}" />
+{% endblock %}
+
+{% block content %}
+<div class="justify-content-center pt-5 ">
+    <div class="pricing-container">
+        <h1 class="pricing-title">Our Pricing Plans</h1>
+        <div class="pricing-plans">
+            <!-- Non-Emergency Service -->
+            <div class="pricing-card">
+                <div class="card-header">
+                    <h2>Non-Emergency Service</h2>
+                </div>
+                <div class="card-body">
+                    <p class="price"><sup>$</sup>99</p>
+                    <ul class="features">
+                        <li>Standard Response Time</li>
+                        <li>Basic Medical Assistance</li>
+                        <li>24/7 Availability</li>
+                        <li>Non-urgent cases only</li>
+                    </ul>
+                </div>
+            </div>
+    
+            <!-- Emergency Service -->
+            <div class="pricing-card emergency">
+                <div class="card-header">
+                    <h2>Emergency Service</h2>
+                </div>
+                <div class="card-body">
+                    <p class="price"><sup>$</sup>299</p>
+                    <ul class="features">
+                        <li>Immediate Response</li>
+                        <li>Advanced Medical Assistance</li>
+                        <li>Priority 24/7 Support</li>
+                        <li>Critical cases</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

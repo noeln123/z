@@ -108,3 +108,30 @@
 .pagination-container ul li:hover a {
 	color: #fff;
 }
+
+@media (max-width: 991.99px) {
+	.page-title {
+		font-size: 44px;
+		text-align: center;
+	}
+
+	.ambulance-list tbody td .ambulance-link,
+	.driver-list tbody td .driver-link {
+		font-size: 24px;
+	}
+
+	.ambulance-list tbody td .ambulance-subhead,
+	.driver-list tbody td .driver-subhead {
+		font-size: 14px;
+	}
+	
+	.table thead > tr > th span,
+	.table tbody > tr > td {
+		font-size: 20px;
+	}
+
+	.table tbody > tr > td {
+		text-align: center;
+		vertical-align: middle;
+	}
+}

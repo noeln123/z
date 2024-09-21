@@ -152,9 +152,10 @@ footer .social h3 {
     .navbar-toggler {
         position: absolute;
         right: 5%;
-        top: 50%;
+        top: 64px;
         transform: translateY(-50%);
         height: 54px;
+        transition: none;
     }
 
     .nav-item {

@@ -1,0 +1,85 @@
+.pricing-title {
+    margin-bottom: 50px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.pricing-plans {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.pricing-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 0;
+    overflow: hidden;
+    width: 50%;
+}
+
+.card-header {
+    background-color: var(--primary);
+    color: #fff;
+    padding: 20px;
+}
+
+.pricing-card.emergency .card-header{
+    background-color: var(--emergency);
+}
+
+.card-body {
+    padding: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.price {
+    font-size: 100px;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.pricing-card.emergency .price  {
+    color: var(--emergency);
+}
+
+.price sup {
+    font-size: 24px;
+}
+
+.features {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.features li {
+    margin: 10px 0;
+    color: var(--dark-text);
+}
+
+.card-footer {
+    padding: 20px;
+    background-color: var(--light-bg);
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.select-btn {
+    text-decoration: none;
+    background-color: var(--primary);
+    color: var(--light-text);
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: 0.2s ease;
+}
+
+.select-btn:hover {
+    background-color: var(--emergency);
+    color: var(--light-text);
+}
