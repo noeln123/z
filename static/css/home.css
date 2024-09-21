@@ -66,13 +66,13 @@
 }
 
 .home-banner .register-btn {
-    background-color: var(--primary);
-    color: #fff;
+    background-color: #fff;
+    color: var(--primary);
     transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
 }
 
 .home-banner .login-btn {
-    background-color: var(--primary-dark);
+    background-color: var(--primary);
     color: #fff;
     transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
 }

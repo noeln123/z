@@ -2,6 +2,12 @@
 
 {% extends "base.html" %}
 
+{% block title %}Track Emergency{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/track.css') }}" />
+{% endblock %}
+
 
 {% block content %}
 <style>
@@ -17,24 +23,24 @@
         }
     }
     @keyframes flicker {
-      0%, 19.9%, 22%, 62.9%, 64%, 64.9%, 70%, 100% {
-        opacity: 0.99;
-        text-shadow: 
-          -1px -1px 0 rgba(255,255,255, 0.4), 
-          1px -1px 0 rgba(255,255,255, 0.4), 
-          -1px 1px 0 rgba(255,255,255, 0.4), 
-          1px 1px 0 rgba(255,255,255, 0.4), 
-          0 -2px 8px, //default color
-          0 0 2px, //default color
-          0 0 5px #ff7e00, 
-          0 0 15px #ff4444, 
-          0 0 2px #ff7e00, 
-          0 2px 3px #000;
-      }
-      20%, 21.9%, 63%, 63.9%, 65%, 69.9% {
-        opacity: 0.4;
-        text-shadow: none;
-      }
+        0%, 19.9%, 22%, 62.9%, 64%, 64.9%, 70%, 100% {
+            opacity: 0.99;
+            text-shadow: 
+            -1px -1px 0 rgba(255,255,255, 0.4), 
+            1px -1px 0 rgba(255,255,255, 0.4), 
+            -1px 1px 0 rgba(255,255,255, 0.4), 
+            1px 1px 0 rgba(255,255,255, 0.4), 
+            0 -2px 8px var(--primary), 
+            0 0 2px var(--primary), 
+            0 0 5px #ff7e00, 
+            0 0 15px #ff4444, 
+            0 0 2px #ff7e00, 
+            0 2px 3px #000;
+        }
+        20%, 21.9%, 63%, 63.9%, 65%, 69.9% {
+            opacity: 0.4;
+            text-shadow: none;
+        }
     }
     .blinking-route {
         animation: blink 2s infinite !important;
@@ -42,129 +48,155 @@
     }
 </style>
 
-
-<div class="container mt-5">
-    <h2 class="">Track Emergency Request</h2>
-    <div class="card mb-3">
-        <div class="card-header">
-            Request Information
-        </div>
-        <div class="card-body">
-            {% if request %}
-                <!-- Các trường ẩn để JavaScript sử dụng -->
-                <input type="hidden" id="emergency-id" value="{{ request.id }}">
-                <input type="hidden" id="emergency-status" value="{{ request.status }}">
-
-                <p><strong>Request ID:</strong> {{ request.id }}</p>
-                <p><strong>Hospital Name:</strong> {{ request.hospital_name }}</p>
-                <p><strong>Hospital Address:</strong> {{ request.hospital_address }}</p>
-                <p><strong>Phone Number:</strong> {{ request.user_phone }}</p>
-                <p><strong>Pickup Address:</strong> {{ request.pickup_address }}</p>
-                <p><strong>Request Type:</strong> {{ request.request_type }}</p>
-                <p><strong>Status:</strong>
-                    <span id="status-badge" class="badge
-                        {% if request.status == 'Pending' %}
-                            bg-warning text-dark
-                        {% elif request.status == 'Dispatched' %}
-                            bg-info
-                        {% elif request.status == 'On the way' %}
-                            bg-primary
-                        {% elif request.status == 'Arrived' %}
-                            bg-success
-                        {% elif request.status == 'Transporting' %}
-                            bg-secondary
-                        {% else %}
-                            bg-dark
-                        {% endif %}
-                    ">
-                        {{ request.status }}
-                    </span>
-                </p>
-                <p><strong>Ambulance:</strong>
-                    {% if ambulance %}
-                        <strong>{{ ambulance.ambulance_type }}</strong> - {{ ambulance.driver.name }} - {{ ambulance.driver.contact_info }}
-                    {% else %}
-                        <span class="text-muted">Not assigned yet</span>
-                    {% endif %}
-                </p>
-                <p><strong>Ambulance Location:</strong>
-                    {% if ambulance and ambulance.driver %}
-                        {{ ambulance.driver.location }}
-                        <!-- Thêm bản đồ nếu cần -->
-                    {% else %}
-                        N/A
-                    {% endif %}
-                </p>
+<div class="container em">
+    <div class="mt-5 em-container">
+        <h2 class="em-title">Track Emergency Request</h2>
+        <div class="em-card mb-3">
+            <div class="em-card-header
+            {% if request.status == 'Pending' %}
+                request-pending
+            {% elif request.status == 'Dispatched' %}
+                request-dispatched
+            {% elif request.status == 'On the way' %}
+                bg-primary
+            {% elif request.status == 'Arrived' %}
+                bg-success
+            {% elif request.status == 'Transporting' %}
+                bg-secondary
             {% else %}
-                <p class="text-muted">You don't have any Emergency Request.</p>
-            {% endif %}
-        </div>
-    </div>
+                bg-dark
+            {% endif %}">
+                Request Information
+            </div>
+            <div class="em-card-body">
+                {% if request %}
+                    <!-- Các trường ẩn để JavaScript sử dụng -->
+                    <input type="hidden" id="emergency-id" value="{{ request.id }}">
+                    <input type="hidden" id="emergency-status" value="{{ request.status }}">
 
-    {% if ambulance %}
-        <div class="mb-3 position-relative">
-            <h4>Current Location of the Ambulance
-                <span id="distance-to-ambulance"></span>
-                <span id="estimated-time"></span>
-            </h4>
-            <!-- Bản đồ Leaflet -->
-            <div id="map" style="height: 400px"></div>
-        </div>
-    {% endif %}
-    
-
-    <!-- Nút Cancel Emergency Request -->
-    <div class="mt-4">
-        {% if request and request.status == 'Pending' and form %}
-            <!-- Nút mở modal -->
-            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmCancelModal">
-                Cancel Emergency Request
-            </button>
-
-            <!-- Bootstrap Modal -->
-            <div class="modal fade" id="confirmCancelModal" tabindex="-1" aria-labelledby="confirmCancelModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <form action="{{ url_for('user.cancel_emergency', emergency_id=request.id) }}" method="POST">
-                            {{ form.hidden_tag() }}
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="confirmCancelModalLabel">Confirm Cancellation</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="em-card-info">
+                        <div class="em-top-info">
+                            <div class="em-top-group">
+                                <p><strong>Request ID:</strong> {{ request.id }}</p>
+                                <p><strong>Request Type:</strong> {{ request.request_type }}</p>
                             </div>
-                            <div class="modal-body">
-                                <p>Are you sure you want to cancel this Emergency Request? This action cannot be undone.</p>
+                            <div class="em-top-group">
+                                <p><strong>Hospital Name:</strong> {{ request.hospital_name }}</p>
+                                <p><strong>Phone Number:</strong> {{ request.user_phone }}</p>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, Keep it</button>
-                                <button type="submit" class="btn btn-danger">Yes, Cancel it</button>
+                            <div class="em-top-group">
+                                <p><strong>Hospital Address:</strong> {{ request.hospital_address }}</p>
+                                <p><strong>Pickup Address:</strong> {{ request.pickup_address }}</p>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                        <hr>
+                        <p><strong>Status:</strong>
+                            <span id="status-badge" class="badge
+                                {% if request.status == 'Pending' %}
+                                    request-pending
+                                {% elif request.status == 'Dispatched' %}
+                                    bg-info
+                                {% elif request.status == 'On the way' %}
+                                    bg-primary
+                                {% elif request.status == 'Arrived' %}
+                                    bg-success
+                                {% elif request.status == 'Transporting' %}
+                                    bg-secondary
+                                {% else %}
+                                    bg-dark
+                                {% endif %}
+                            ">
+                                {{ request.status }}
+                            </span>
+                        </p>
+                        <p><strong>Ambulance:</strong>
+                        {% if ambulance %}
+                            <strong>{{ ambulance.ambulance_type }}</strong> - {{ ambulance.driver.name }} - {{ ambulance.driver.contact_info }}
+                        {% else %}
+                            <span class="text-muted">Not assigned yet</span>
+                        {% endif %}
+                        </p>
+                        <p><strong>Ambulance Location:</strong>
+                            {% if ambulance and ambulance.driver %}
+                                {{ ambulance.driver.location }}
+                                <!-- Thêm bản đồ nếu cần -->
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </p>
+                    {% else %}
+                        <p class="text-muted">You don't have any Emergency Request.</p>
+                    {% endif %}
                 </div>
             </div>
-        {% elif request %}
-            <button type="button" class="btn btn-danger" disabled>Cancel Emergency Request</button>
+        </div>
+
+        {% if ambulance %}
+            <div class="mb-3 position-relative">
+                <h4>Current Location of the Ambulance
+                    <span id="distance-to-ambulance"></span>
+                    <span id="estimated-time"></span>
+                </h4>
+                <!-- Bản đồ Leaflet -->
+                <div id="map" style="height: 400px"></div>
+            </div>
         {% endif %}
+        
+
+        <!-- Nút Cancel Emergency Request -->
+        <div class="mt-4 em-buttons">
+            {% if request and request.status == 'Pending' and form %}
+                <!-- Nút mở modal -->
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmCancelModal">
+                    Cancel Emergency Request
+                </button>
+
+                <!-- Bootstrap Modal -->
+                <div class="modal fade" id="confirmCancelModal" tabindex="-1" aria-labelledby="confirmCancelModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="{{ url_for('user.cancel_emergency', emergency_id=request.id) }}" method="POST">
+                                {{ form.hidden_tag() }}
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmCancelModalLabel">Confirm Cancellation</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you sure you want to cancel this Emergency Request? This action cannot be undone.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, Keep it</button>
+                                    <button type="submit" class="btn btn-danger">Yes, Cancel it</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% elif request %}
+                <button type="button" class="btn btn-danger" disabled>Cancel Emergency Request</button>
+            {% endif %}
+            {% if not request %}
+                <a href="{{ url_for('user.emergency_request') }}" class="btn btn-primary">Create Emergency Request</a>
+            {% endif %}
+    
+            <a href="{{ url_for('user.home') }}" class="btn btn-secondary">Back to home</a>
+        </div>
+
+
+        <script>
+            const ambulanceIconUrl = "{{ url_for('static', filename='images/ambulances.png') }}";
+            const userIconUrl = "{{ url_for('static', filename='images/user.svg') }}";
+        </script>
+        <!-- Include SocketIO client and track_emergency.js -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js" integrity="sha512-luMnTJZ7oEchNDZAtQhgjomP1eZefnl82ruTH/3Oj/Yu5qYtwL7+dVRccACS/Snp1lFXq188XFipHKYE75IaQQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+        <!-- Thêm Leaflet Routing Machine -->
+        <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+        <!-- Thêm plugin để hỗ trợ OpenRouteService -->
+        <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-openrouteservice.js"></script>
+        <script src="{{ url_for('static', filename='js/track_emergency.js') }}"></script>
     </div>
-
-    {% if not request %}
-        <a href="{{ url_for('user.home') }}" class="btn btn-primary mt-3">Create Emergency Request</a>
-    {% endif %}
-
-    <a href="{{ url_for('user.home') }}" class="btn btn-secondary mt-3">Back to home</a>
-    <script>
-        const ambulanceIconUrl = "{{ url_for('static', filename='images/ambulances.png') }}";
-        const userIconUrl = "{{ url_for('static', filename='images/user.svg') }}";
-    </script>
-    <!-- Include SocketIO client and track_emergency.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js" integrity="sha512-luMnTJZ7oEchNDZAtQhgjomP1eZefnl82ruTH/3Oj/Yu5qYtwL7+dVRccACS/Snp1lFXq188XFipHKYE75IaQQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <!-- Thêm Leaflet Routing Machine -->
-    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
-    <!-- Thêm plugin để hỗ trợ OpenRouteService -->
-    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-openrouteservice.js"></script>
-    <script src="{{ url_for('static', filename='js/track_emergency.js') }}"></script>
 </div>
 {% endblock %}
 

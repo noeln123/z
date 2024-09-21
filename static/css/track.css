@@ -1,0 +1,70 @@
+.request-pending {
+    background-color: #FFDE00;
+    color: #666;
+}
+
+.request-dispatched {
+    background-color: #999;
+    color: #fff;
+}
+
+.request-ontheway {
+    background-color: var(--primary);
+    color: #fff;
+}
+
+.request-arrived {
+    background-color: #5DBE3F;
+    color: #fff;
+}
+
+.request-transporting {
+    background-color: var(--emergency);
+    color: #fff;
+}
+
+.em {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.em-container {
+    width: 80%;
+}
+
+.em-title {
+    font-weight: 600;
+}
+
+.em-card {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.em-card-header {
+    font-weight: 600;
+    padding: 8px 16px;
+}
+
+.em-card-body {
+    padding: 8px 16px;
+    background-color: #fff;
+}
+
+.em-card-info {
+    padding: 16px;
+}
+
+.em-top-info {
+    display: flex;
+}
+
+.em-top-group {
+    flex: 1
+}
+
+.em-buttons {
+    text-align: center;
+}
