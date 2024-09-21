@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from extensions import db
-from models import User, Profile, EmergencyRequest, Feedback, ContactMessage
+from models import User, Profile, EmergencyRequest, Feedback, ContactMessage, Driver, Ambulance
 from forms import RegistrationForm, LoginForm, EmergencyRequestForm, FeedbackForm, ProfileForm, ContactForm, CancelEmergencyForm
 from . import user_bp  # Using relative import
 
@@ -194,10 +194,10 @@ def about_us():
 def gallery():
     return render_template('gallery.html')
 
-@user_bp.route('/ambulance_types')
+@user_bp.route('/ambulance_list')
 def ambulance_types():
     ambulances = Ambulance.query.all()
-    return render_template('ambulance_types.html', ambulances=ambulances)
+    return render_template('ambulance_list.html', ambulances=ambulances)
 
 @user_bp.route('/costs')
 def costs():
