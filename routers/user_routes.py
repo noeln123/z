@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
-from extensions import db
-from models import User, Profile, EmergencyRequest, Feedback, ContactMessage, Driver, Ambulance
+from extensions import db, socketio
+from models import User, Profile, EmergencyRequest, Feedback, ContactMessage, Driver, Ambulance, Setting
 from forms import RegistrationForm, LoginForm, EmergencyRequestForm, FeedbackForm, ProfileForm, ContactForm, CancelEmergencyForm
 from . import user_bp  # Using relative import
 
@@ -117,6 +117,15 @@ def emergency_request():
         )
         db.session.add(request)
         db.session.commit()
+
+        # Kiểm tra auto_dispatch
+        auto_dispatch_setting = Setting.query.filter_by(key='auto_dispatch').first()
+        if auto_dispatch_setting and auto_dispatch_setting.value == 'True':
+            # Tự động điều phối
+            print("TU DONG DIEU PHIOIIIIII")
+            dispatch_emergency_request(request)
+
+
         flash('Emergency request submitted.', 'success')
         return redirect(url_for('user.home'))
     return render_template("emergency_request.html", form=form)
@@ -218,3 +227,35 @@ def costs():
 def driver_list():
     drivers = Driver.query.all()
     return render_template('driver_list.html', drivers=drivers)
+
+
+
+
+
+def dispatch_emergency_request(emergency_request):
+    available_ambulance = Ambulance.query.filter_by(status='Available').first()
+    if available_ambulance:
+        emergency_request.ambulance_id = available_ambulance.id
+        emergency_request.status = 'Dispatched'
+        available_ambulance.status = 'Unavailable'
+        db.session.commit()
+
+        # Emit sự kiện 'status_update' tới phòng tương ứng
+        room = f'emergency_{emergency_request.id}'
+        print(f"admin update {room}")
+        socketio.emit('status_update', {'status': emergency_request.status}, room=room)
+
+
+        #Phân phối tới các EMTs phù hợp
+        # room = f"emt_{emt.id}"
+        room = "emt_2_getdispatch"
+        dispatch_data = {
+            'id': emergency_request.id,
+            'hospital_name': emergency_request.hospital_name,
+            'hospital_address': emergency_request.hospital_address,
+            'user_phone': emergency_request.user_phone,
+            'pickup_address': emergency_request.pickup_address,
+            'request_type': emergency_request.request_type,
+            'status': emergency_request.status,
+        }
+        socketio.emit('dispatch', dispatch_data, room=room)
