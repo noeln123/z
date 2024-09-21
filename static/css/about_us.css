@@ -1,0 +1,109 @@
+.page-content {
+    margin-top: 76px;
+}
+
+.about-section {
+    background-color: #f4f4f4;
+    padding: 80px 0;
+}
+
+.contact-section {
+    padding: 50px 0;
+}
+
+.about-header {
+    font-size: 40px;
+    font-weight: bold;
+    color: #316FF6;
+}
+
+.about-text, .mission-text p, .contact-section p {
+    font-size: 1.1rem;
+    color: #555;
+    line-height: 1.8;
+}
+
+/* Mission Section */
+.mission-section {
+    background-color: #fff;
+    padding: 70px;
+}
+
+.mission-image img {
+    width: 100%;
+    max-width: 600px;
+}
+
+.mission-header {
+    font-size: 32px;
+    color: #dc3545;
+}
+
+/* Team Section */
+.team-section {
+    padding: 50px 0;
+}
+
+.team-section h2, .team-member h4 {
+    color: var(--primary-dark);
+}
+
+.team-member {
+    text-align: center;
+}
+
+.team-image-wrapper img {
+    border-radius: 50%;
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+}
+.team-member h4 {
+    font-size: 1.2rem;
+    margin-top: 15px;
+}
+.team-member p {
+    font-size: 1rem;
+    color: #555;
+}
+
+/* Why Choose Section */
+.why-choose-section {
+    background-color: var(--primary);
+    padding: 50px 0;
+    color: #fff;
+}
+
+.why-choose-list li {
+    list-style-type: none;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+
+.why-choose-list li i {
+    display: inline-block;
+    width: 20px;
+    margin-right: 8px;
+    text-align: center;
+}
+
+.why-choose-section .col-md-6 img {
+    max-width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .mission-section {
+        flex-direction: column;
+        text-align: center;
+    }
+    .mission-text {
+        margin-bottom: 20px;
+    }
+    .mission-image img {
+        max-width: 100%;
+    }
+    .why-choose-section .row {
+        flex-direction: column;
+    }
+}
