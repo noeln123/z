@@ -100,3 +100,49 @@
 .contact-info .contact-social-list li {
     font-size: 32px;
 }
+
+.map-embed {
+    width: 90%;
+    height: auto;
+}
+
+.map-embed iframe {
+    width: 100%;
+    height: 100%;
+}
+
+@media (max-width : 1023.99px) {
+    .contact-title {
+        font-size: 56px;
+        text-align: center;
+    }
+
+    .form-group label {
+        font-size: 40px;
+    }
+
+    .form-group input, .form-group textarea {
+        font-size: 30px;
+    }
+
+    .contact-form .contact-btn {
+        font-size: 32px;
+        padding: 16px;
+    }
+
+    .contact-info {
+        margin-top: 40px;
+    }
+
+    .contact-info .info-section p {
+        font-size: 32px!important;
+    }
+
+    .contact-info .info-section ul li {
+        font-size: 28px!important;
+    }
+
+    .contact-social-list li a {
+        font-size: 50px;
+    }
+}

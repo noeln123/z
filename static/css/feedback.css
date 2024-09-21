@@ -38,3 +38,20 @@
     font-weight: 600;
     padding: 6px 24px;
 }
+
+@media (max-width: 1023.99px) {
+    .fb-title {
+        font-size: 56px;
+        text-align: center;
+    }
+
+    .form-group textarea {
+        font-size: 30px;
+    }
+
+    .fb-button .fb-btn {
+        width: 100%;
+        padding: 16px;
+        font-size: 24px;
+    }
+}

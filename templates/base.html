@@ -12,11 +12,11 @@
     {% block styles %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navigation">
-        <div class="container-fluid">
+    <nav class="navbar navbar-expand-xl navigation">
+        <div class="container-fluid nav-container">
             <a class="navbar-brand nav-logo" href="{{ url_for('user.home') }}">
                 <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" width="50" height="50" class="d-inline-block align-text-center">
-                Rapid Rescue
+                <span>Rapid Rescue</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -79,10 +79,10 @@
     </div>
     <footer class="text-center text-lg-start" >
         <div class="container footer-content">
-            <div class="row justify-content-center">
+            <div class="row justify-content-center footer-container">
                 <div class="col-md-9 text-center">
                     <div class="footer-logo mb-4">
-                        <a href="#">Rapid Rescue</a>
+                        Rapid Rescue
                     </div>
                     <ul class="footer-links mb-5">
                         <li><a href="{{ url_for('user.profile') }}">Profile</a></li>

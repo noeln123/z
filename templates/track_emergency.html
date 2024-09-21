@@ -75,62 +75,50 @@
                     <input type="hidden" id="emergency-status" value="{{ request.status }}">
 
                     <div class="em-card-info">
-                        <div class="em-info-section">
-                            <div class="em-group">
-                                <p><strong>Request ID:</strong> {{ request.id }}</p>
-                                <p><strong>Request Type:</strong> {{ request.request_type }}</p>
-                            </div>
-                            <div class="em-group">
-                                <p><strong>Hospital Name:</strong> {{ request.hospital_name }}</p>
-                                <p><strong>Phone Number:</strong> {{ request.user_phone }}</p>
-                            </div>
-                            <div class="em-group">
-                                <p><strong>Hospital Address:</strong> {{ request.hospital_address }}</p>
-                                <p><strong>Pickup Address:</strong> {{ request.pickup_address }}</p>
-                            </div>
+                        <div class="em-info-section row">
+                            <p class="col-xl-4 col-lg-6"><strong>Request ID:</strong> <span class="request-info">{{ request.id }}</span></p>
+                            <p class="col-xl-4 col-lg-6"><strong>Request Type:</strong> <span class="request-info">{{ request.request_type }}</span></p>
+                            <p class="col-xl-4 col-lg-6"><strong>Hospital Name:</strong> <span class="request-info">{{ request.hospital_name }}</span></p>
+                            <p class="col-xl-4 col-lg-6"><strong>Phone Number:</strong> <span class="request-info">{{ request.user_phone }}</span></p>
+                            <p class="col-xl-4 col-lg-6"><strong>Hospital Address:</strong> <span class="request-info">{{ request.hospital_address }}</span></p>
+                            <p class="col-xl-4 col-lg-6"><strong>Pickup Address:</strong> <span class="request-info">{{ request.pickup_address }}</span></p>
                         </div>
                         <hr>
-                        <div class="em-info-section">
-                            <div class="em-group">
-                                <p><strong>Status:</strong>
-                                    <span id="status-badge" class="badge
-                                        {% if request.status == 'Pending' %}
-                                            request-pending
-                                        {% elif request.status == 'Dispatched' %}
-                                            bg-info
-                                        {% elif request.status == 'On the way' %}
-                                            bg-primary
-                                        {% elif request.status == 'Arrived' %}
-                                            bg-success
-                                        {% elif request.status == 'Transporting' %}
-                                            bg-secondary
-                                        {% else %}
-                                            bg-dark
-                                        {% endif %}
-                                    ">
-                                        {{ request.status }}
-                                    </span>
-                                </p>
-                            </div>
-                            <div class="em-group">
-                                <p><strong>Ambulance:</strong>
-                                {% if ambulance %}
-                                    <strong>{{ ambulance.ambulance_type }}</strong> - {{ ambulance.driver.name }} - {{ ambulance.driver.contact_info }}
-                                {% else %}
-                                    <span class="text-muted">Not assigned yet</span>
-                                {% endif %}
-                                </p>
-                            </div>
-                            <div class="em-group">
-                                <p><strong>Ambulance Location:</strong>
-                                    {% if ambulance and ambulance.driver %}
-                                        {{ ambulance.driver.location }}
-                                        <!-- Thêm bản đồ nếu cần -->
+                        <div class="em-info-section row">
+                            <p class="col-xl-4 col-lg-6"><strong>Status:</strong>
+                                <span id="status-badge" class="badge
+                                    {% if request.status == 'Pending' %}
+                                        request-pending
+                                    {% elif request.status == 'Dispatched' %}
+                                        bg-info
+                                    {% elif request.status == 'On the way' %}
+                                        bg-primary
+                                    {% elif request.status == 'Arrived' %}
+                                        bg-success
+                                    {% elif request.status == 'Transporting' %}
+                                        bg-secondary
                                     {% else %}
-                                        N/A
+                                        bg-dark
                                     {% endif %}
-                                </p>
-                            </div>
+                                ">
+                                    {{ request.status }}
+                                </span>
+                            </p>
+                            <p class="col-xl-4 col-lg-6"><strong>Ambulance:</strong>
+                            {% if ambulance %}
+                                <span class="request-info"><strong>{{ ambulance.ambulance_type }}</strong> - {{ ambulance.driver.name }} - {{ ambulance.driver.contact_info }}</span>
+                            {% else %}
+                                <span class="request-info text-muted">Not assigned yet</span>
+                            {% endif %}
+                            </p>
+                            <p class="col-xl-4 col-lg-6"><strong>Ambulance Location:</strong>
+                                {% if ambulance and ambulance.driver %}
+                                    {{ ambulance.driver.location }}
+                                    <!-- Thêm bản đồ nếu cần -->
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </p>
                         </div>
                     {% else %}
                         <p class="text-muted">You don't have any Emergency Request.</p>
@@ -184,7 +172,7 @@
                 <button type="button" class="btn btn-danger" disabled>Cancel Emergency Request</button>
             {% endif %}
             {% if not request %}
-                <a href="{{ url_for('user.emergency_request') }}" class="btn btn-primary">Create Emergency Request</a>
+                <a href="{{ url_for('user.emergency_request') }}" class="btn em-create-btn">Create Emergency Request</a>
             {% endif %}
     
             <a href="{{ url_for('user.home') }}" class="btn btn-secondary">Back to home</a>

@@ -141,3 +141,43 @@
     opacity: 0.7;
     transform: scaleY(1.05);
 }
+
+@media (max-width: 991.99px) {
+    .user-name {
+        font-size: 36px !important;
+    }
+
+    .user-phone,.user-link-list ul li a {
+        font-size: 24px !important;
+    }
+
+    .profile-sidebar {
+        padding: 0;
+        margin: 0;
+    }
+
+    .profile-main {
+        border-radius: 0;
+        padding: 16px  80px;
+    }
+
+    .profile-title {
+        text-align: center;
+        font-size: 56px;
+        margin-top: 20px;
+    }
+
+    .form-group label {
+        font-size: 40px;
+    }
+
+    .form-group input, .form-group textarea {
+        font-size: 30px;
+    }
+
+    .profile-main .profile-btn {
+        font-size: 32px;
+        padding: 16px 0;
+        margin: 24px 0;
+    }
+}

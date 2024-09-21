@@ -65,3 +65,23 @@
     opacity: 0.7;
     transform: scaleY(1.05);
 }
+
+@media (max-width: 1023.99px) {
+    .er-title {
+        font-size: 56px;
+        text-align: center;
+    }
+
+    .form-group input, .form-group select {
+        font-size: 30px;
+    }
+
+    .form-group label {
+        font-size: 40px;
+    }
+
+    .er-buttons .er-btn {
+        font-size: 24px;
+        padding: 16px;
+    }
+}
