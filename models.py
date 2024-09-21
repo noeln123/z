@@ -11,7 +11,6 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(400), nullable=False)
     role = db.Column(db.String(20), nullable=False)  # 'user', 'admin', 'emt'
     profile = db.relationship('Profile', backref='user', uselist=False)
-    # Mối quan hệ giữa người dùng và yêu cầu khẩn cấp do người dùng thực hiện
     emergency_requests = db.relationship('EmergencyRequest', 
                                          foreign_keys='EmergencyRequest.user_id', 
                                          backref='user', lazy=True)
@@ -81,7 +80,6 @@ class EmergencyRequest(db.Model):
             'status': self.status,
             'ambulance_id': self.ambulance_id,
             'user_id': self.user_id
-            # Thêm các trường khác nếu cần
         }
 
 

@@ -84,26 +84,28 @@
         document.addEventListener('DOMContentLoaded', () => {
             const socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
             const joined = document.getElementById('joined').value;
+            socket.on('connect', () => {
+                console.log("Socket connected: " + socket.id);
+            });
+
+            socket.on('error', (data) => {
+                console.error('Error:', data.message);
+            });
+
             if (joined !== "False") {
                 const emergencyId = document.getElementById('emergency_id').value;
                 if (navigator.geolocation) {
                     navigator.geolocation.watchPosition((position) => {
-                        console.log("EM" + emergencyId +": updating your location")
                         const latitude = position.coords.latitude;
                         const longitude = position.coords.longitude;
 
 
-                        socket.on('connect', () => {
-                            socket.emit('update_location', {
-                                'latitude': latitude,
-                                'longitude': longitude,
-                                'emergency_id': emergencyId
-                            });
+                        socket.emit('update_location', {
+                            'latitude': latitude,
+                            'longitude': longitude,
+                            'emergency_id': emergencyId
                         });
-
-                        socket.on('error', (data) => {
-                            console.error('Error:', data.message);
-                        });
+                        console.log("EM" + emergencyId +": updating your location")
                     }, (error) => {
                         console.error('Geolocation error:', error);
                     }, {
@@ -123,7 +125,6 @@
                 socket.emit('join_room', { 'room': `emt_${userId}_getdispatch` });
             });
 
-            // Lắng nghe sự kiện 'dispatch'
             socket.on('dispatch', (data) => {
                 console.log('Dispatch event received:', data);
                 addEmergencyRequest(data);
@@ -159,7 +160,6 @@
                 // Thêm dòng vào tbody
                 tbody.prepend(tr); // Sử dụng prepend để thêm dòng mới lên trên cùng
 
-                // Cập nhật thông báo "No emergency requests..." nếu có
                 const noDataRow = tbody.querySelector('tr td[colspan="9"]');
                 if (noDataRow) {
                     noDataRow.parentElement.remove();
@@ -167,7 +167,6 @@
             }
 
 
-            // Hàm hiển thị thông báo
             function showNotification(message) {
                 const container = document.getElementById('notification-container');
                 const notification = document.createElement('div');

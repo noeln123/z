@@ -47,7 +47,6 @@ class UpdateAmbulanceForm(FlaskForm):
         ('Type A', 'Type A'),
         ('Type B', 'Type B'),
         ('Type C', 'Type C'),
-        # Add more types if needed
     ], validators=[DataRequired()])
     
     size = SelectField('Size', choices=[

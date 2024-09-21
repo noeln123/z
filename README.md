@@ -1,42 +1,42 @@
 # Rapid Rescue
 
-Rapid Rescue là một ứng dụng web cho phép người dùng nhanh chóng yêu cầu dịch vụ xe cứu thương, theo dõi vị trí xe cứu thương theo thời gian thực và cung cấp thông tin y tế cần thiết cho Kỹ thuật viên y tế khẩn cấp (EMT).
+Rapid Rescue is a web application that allows users to quickly request ambulance services, track the real-time location of the ambulance, and provide necessary medical information to Emergency Medical Technicians (EMT).
 
-## Các Tính Năng Chính
+## Key Features
 
-- Đăng ký và đăng nhập tài khoản
-- Quản lý hồ sơ cá nhân và hồ sơ y tế
-- Yêu cầu dịch vụ xe cứu thương
-- Theo dõi xe cứu thương theo thời gian thực
-- Phản hồi về dịch vụ
-- Quản trị viên quản lý xe cứu thương và tài xế
-- EMT truy cập thông tin bệnh nhân và cập nhật trạng thái
+- User registration and login
+- Manage personal profile and medical records
+- Request ambulance service
+- Real-time ambulance tracking
+- Provide feedback on the service
+- Admins manage ambulances and drivers
+- EMTs access patient information and update status
 
-## Cài Đặt
+## Installation
 
-1. Clone repository:
+1. Clone the repository:
 
     ```bash
     git clone https://github.com/yourusername/z.git
     cd rapid_rescue
     ```
 
-2. Tạo và kích hoạt môi trường ảo:
+2. Create and activate a virtual environment:
 
     ```bash
     python3 -m venv venv
     source venv/bin/activate
     ```
 
-3. Cài đặt các gói yêu cầu:
+3. Install the required packages:
 
     ```bash
     pip install -r requirements.txt
     ```
 
-4. Cấu hình MySQL trong `config.py`.
+4. Configure MySQL in `config.py`.
 
-5. Khởi tạo và áp dụng migration:
+5. Initialize and apply migration:
 
     ```bash
     flask db init
@@ -44,7 +44,7 @@ Rapid Rescue là một ứng dụng web cho phép người dùng nhanh chóng y�
     flask db upgrade
     ```
 
-6. Chạy ứng dụng:
+6. Run the application:
 
     ```bash
     python app.py

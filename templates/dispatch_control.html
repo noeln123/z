@@ -2,41 +2,41 @@
 
 {% block content %}
 <div class="container-fluid">
-    <h2>Dispatch Xe Cứu Thương Cho Yêu Cầu ID: {{ emergency_request.id }}</h2>
+    <h2>Dispatch Ambulance for Request ID: {{ emergency_request.id }}</h2>
     <div class="card">
         <div class="card-body">
-            <p><strong>Tên Bệnh Viện:</strong> {{ emergency_request.hospital_name }}</p>
-            <p><strong>Địa Chỉ Bệnh Viện:</strong> {{ emergency_request.hospital_address }}</p>
-            <p><strong>Số Điện Thoại:</strong> {{ emergency_request.user_phone }}</p>
-            <p><strong>Địa Chỉ Đón:</strong> {{ emergency_request.pickup_address }}</p>
-            <p><strong>Loại Yêu Cầu:</strong> {{ emergency_request.request_type }}</p>
-            <p><strong>Trạng Thái:</strong> 
+            <p><strong>Hospital Name:</strong> {{ emergency_request.hospital_name }}</p>
+            <p><strong>Hospital Address:</strong> {{ emergency_request.hospital_address }}</p>
+            <p><strong>Phone Number:</strong> {{ emergency_request.user_phone }}</p>
+            <p><strong>Pickup Address:</strong> {{ emergency_request.pickup_address }}</p>
+            <p><strong>Request Type:</strong> {{ emergency_request.request_type }}</p>
+            <p><strong>Status:</strong> 
                 {% if emergency_request.status == 'Pending' %}
-                    <span class="badge bg-warning text-dark">Đang chờ</span>
+                    <span class="badge bg-warning text-dark">Pending</span>
                 {% elif emergency_request.status == 'Dispatched' %}
-                    <span class="badge bg-info">Đang điều phối</span>
+                    <span class="badge bg-info">Dispatched</span>
                 {% elif emergency_request.status == 'On the way' %}
-                    <span class="badge bg-primary">Đang trên đường</span>
+                    <span class="badge bg-primary">On the way</span>
                 {% elif emergency_request.status == 'Arrived' %}
-                    <span class="badge bg-success">Đã đến</span>
+                    <span class="badge bg-success">Arrived</span>
                 {% elif emergency_request.status == 'Transporting' %}
-                    <span class="badge bg-secondary">Đang vận chuyển</span>
+                    <span class="badge bg-secondary">Transporting</span>
                 {% else %}
                     <span class="badge bg-dark">{{ emergency_request.status }}</span>
                 {% endif %}
             </p>
             <form action="{{ url_for('admin.dispatch_control', request_id=emergency_request.id) }}" method="POST">
                 <div class="mb-3">
-                    <label for="ambulance_id" class="form-label">Chọn Xe Cứu Thương</label>
+                    <label for="ambulance_id" class="form-label">Select Ambulance</label>
                     <select name="ambulance_id" id="ambulance_id" class="form-select" required>
-                        <option value="" disabled selected>-- Chọn Xe Cứu Thương --</option>
+                        <option value="" disabled selected>-- Select Ambulance --</option>
                         {% for ambulance in ambulances %}
                             <option value="{{ ambulance.id }}">{{ ambulance.ambulance_type }} (ID: {{ ambulance.id }}) - {{ ambulance.status }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <button type="submit" class="btn btn-success">Dispatch</button>
-                <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-secondary">Hủy</a>
+                <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
     </div>

@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from extensions import db, socketio
 from models import User, Profile, EmergencyRequest, Feedback, ContactMessage, Driver, Ambulance, Setting
 from forms import RegistrationForm, LoginForm, EmergencyRequestForm, FeedbackForm, ProfileForm, ContactForm, CancelEmergencyForm
-from . import user_bp  # Using relative import
+from . import user_bp 
 
 @user_bp.route('/')
 def home():
@@ -101,7 +101,6 @@ def emergency_request():
         form.pickup_address.data = current_user.profile.address
 
     if form.validate_on_submit():
-        # If Javascript not correctly
         if form.request_type.data == 'Emergency':
             form.hospital_name.data = "Auto Find"
             form.hospital_address.data = "Auto Find"
@@ -118,10 +117,8 @@ def emergency_request():
         db.session.add(request)
         db.session.commit()
 
-        # Kiểm tra auto_dispatch
         auto_dispatch_setting = Setting.query.filter_by(key='auto_dispatch').first()
         if auto_dispatch_setting and auto_dispatch_setting.value == 'True':
-            # Tự động điều phối
             print("TU DONG DIEU PHIOIIIIII")
             dispatch_emergency_request(request)
 
@@ -137,15 +134,12 @@ def emergency_request():
 def cancel_emergency(emergency_id):
     form = CancelEmergencyForm()
     if form.validate_on_submit():
-        # Truy xuất EM dựa trên ID
         emergency = EmergencyRequest.query.get_or_404(emergency_id)
         
-        # Kiểm tra xem EM có thuộc về người dùng hiện tại không
         if emergency.user_id != current_user.id:
             flash('You do not have the right to cancel this Emergency Request.', 'danger')
             return redirect(url_for('user.track_emergency'))
         
-        # Kiểm tra trạng thái EM
         if emergency.status == 'Pending':
             emergency.status = 'Canceled'
             db.session.commit()
@@ -163,12 +157,10 @@ def cancel_emergency(emergency_id):
 @user_bp.route('/track_emergency')
 @login_required
 def track_emergency():
-    # Lấy EM hiện tại của người dùng (không bao gồm EM đã "Arrived" hoặc "Canceled")
     current_em = EmergencyRequest.query.filter_by(user_id=current_user.id)\
         .filter(EmergencyRequest.status.notin_(['Arrived', 'Canceled']))\
         .first()
     
-    # Nếu có EM hiện tại, tạo form hủy EM
     form = CancelEmergencyForm() if current_em and current_em.status == 'Pending' else None
     
     return render_template('track_emergency.html', request=current_em, ambulance=current_em.ambulance if current_em else None, form=form)
@@ -192,7 +184,6 @@ def feedback():
 def contact_us():
     form = ContactForm()
     if form.validate_on_submit():
-        # Lưu thông tin liên hệ vào cơ sở dữ liệu
         contact_message = ContactMessage(
             name=form.name.data,
             email=form.email.data,
@@ -239,9 +230,10 @@ def dispatch_emergency_request(emergency_request):
         available_ambulance.status = 'Unavailable'
         db.session.commit()
 
-        # Emit sự kiện 'status_update' tới phòng tương ứng
         room = f'emergency_{emergency_request.id}'
         print(f"admin update {room}")
+        socketio.emit('status_update', {'status': emergency_request.status}, room=room)
+        time.sleep(0.1)
         socketio.emit('status_update', {'status': emergency_request.status}, room=room)
 
 

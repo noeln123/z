@@ -4,6 +4,7 @@ from extensions import db, socketio
 from models import Ambulance, Driver, EmergencyRequest, Setting
 from forms import UpdateAmbulanceForm
 from . import admin_bp
+import time
 
 def admin_required(f):
     from functools import wraps
@@ -20,22 +21,18 @@ def admin_required(f):
 @login_required
 @admin_required
 def admin_dashboard():
-    # Query overview data
     total_ambulances = Ambulance.query.count()
     total_drivers = Driver.query.count()
     total_emergency_requests = EmergencyRequest.query.count()
     
-    # Emergency requests by status
     pending_requests = EmergencyRequest.query.filter_by(status='Pending').count()
     dispatched_requests = EmergencyRequest.query.filter_by(status='Dispatched').count()
     on_the_way_requests = EmergencyRequest.query.filter_by(status='On the way').count()
     arrived_requests = EmergencyRequest.query.filter_by(status='Arrived').count()
     transporting_requests = EmergencyRequest.query.filter_by(status='Transporting').count()
     
-    # Query the list of recent emergency requests
     recent_requests = EmergencyRequest.query.order_by(EmergencyRequest.id.desc()).limit(10).all()
     
-    # Query the list of active ambulances (join with EmergencyRequest having status 'Transporting', 'On the way')
     statuses = ['On the way', 'Transporting']
     active_ambulances = Ambulance.query.join(EmergencyRequest).filter(EmergencyRequest.status.in_(statuses)).all()
     
@@ -69,13 +66,10 @@ def manage_ambulances():
 def add_ambulance():
     form = UpdateAmbulanceForm()
 
-    # Get all drivers
     drivers = Driver.query.all()
     form.driver_id.choices = [(driver.id, driver.name) for driver in Driver.query.all()]
-    # Create a list of tuples containing driver information and their status
     driver_choices = []
     for driver in drivers:
-        # Check if this driver is already assigned to an ambulance
         assigned = Ambulance.query.filter_by(driver_id=driver.id).first()
         is_available = not assigned  # If not assigned, the driver is available
         driver_choices.append((driver.id, driver.name, is_available))
@@ -134,7 +128,7 @@ def manage_drivers():
 @login_required
 @admin_required
 def add_driver():
-    from forms import DriverForm  # Create a new form for Driver
+    from forms import DriverForm 
     form = DriverForm()
     if form.validate_on_submit():
         driver = Driver(
@@ -153,7 +147,7 @@ def add_driver():
 @admin_required
 def edit_driver(driver_id):
     driver = Driver.query.get_or_404(driver_id)
-    from forms import DriverForm  # Create a new form for Driver
+    from forms import DriverForm
     form = DriverForm(obj=driver)
     if form.validate_on_submit():
         driver.name = form.name.data
@@ -189,9 +183,10 @@ def dispatch_control(request_id):
             ambulance.status = 'Unavailable'
             db.session.commit()
 
-            # Emit sự kiện 'status_update' tới phòng tương ứng
             room = f'emergency_{emergency_request.id}'
             print(f"admin update {room}")
+            socketio.emit('status_update', {'status': emergency_request.status}, room=room)
+            time.sleep(0.1)
             socketio.emit('status_update', {'status': emergency_request.status}, room=room)
 
 
@@ -226,8 +221,6 @@ def real_time_monitor():
 @login_required
 @admin_required
 def send_message():
-    # Handle sending messages to EMT or users
-    # You can use tools like Flask-Mail or integrate an SMS API
     flash('Message has been sent.', 'success')
     return redirect(url_for('admin.admin_dashboard'))
 

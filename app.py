@@ -17,7 +17,7 @@ def create_app():
     migrate = Migrate(app, db)
 
     # Khởi tạo socketio
-    socketio.init_app(app, cors_allowed_origins="*")  # Cấu hình CORS nếu cần
+    socketio.init_app(app, cors_allowed_origins="*") 
     
     # Đăng ký blueprints
     app.register_blueprint(user_bp)
@@ -27,7 +27,7 @@ def create_app():
     # Import các models để Flask-Migrate có thể nhận diện chúng
     with app.app_context():
         from models import User, Profile, Ambulance, Driver, EmergencyRequest, Feedback
-        # db.create_all()  # Chỉ chạy lần đầu hoặc sử dụng Flask-Migrate
+        # db.create_all()  # just first-run or use Flask-Migrate
         auto_dispatch = Setting.query.filter_by(key='auto_dispatch').first()
         if not auto_dispatch:
             auto_dispatch = Setting(key='auto_dispatch', value='False')

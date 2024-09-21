@@ -1,10 +1,11 @@
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
-from extensions import db,socketio
+from extensions import db, socketio
 from models import EmergencyRequest
 from forms import UpdateStatusForm
 from flask_socketio import emit, join_room, leave_room
 from . import emt_bp
+import time
 
 def emt_required(f):
     from functools import wraps
@@ -12,7 +13,7 @@ def emt_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if current_user.role != 'emt':
-            flash('Bạn không có quyền truy cập trang này.', 'danger')
+            flash('You do not have permission to access this page.', 'danger')
             return redirect(url_for('user.home'))
         return f(*args, **kwargs)
     return decorated_function
@@ -35,16 +36,11 @@ def emt_dashboard():
 @emt_required
 def patient_info(request_id):
     emergency_request = EmergencyRequest.query.get_or_404(request_id)
-    
-    # Kiểm tra xem EMT có quyền xem EM này không (tùy thuộc vào logic ứng dụng của bạn)
-    # Ví dụ: EMT chỉ có thể xem EM đã được dispatch tới họ
-    # Nếu cần thiết, hãy thêm các kiểm tra bổ sung ở đây
 
-    # Truy xuất thông tin hồ sơ của người dùng đã tạo EM
-    user_profile = emergency_request.user.profile  # Giả sử có relationship 'user' và 'profile'
+    user_profile = emergency_request.user.profile
 
     if not user_profile:
-        flash('Người dùng chưa cập nhật hồ sơ.', 'warning')
+        flash('The user has not updated their profile.', 'warning')
         return redirect(url_for('emt.emt_dashboard'))
     
     return render_template('patient_info.html', emergency_request=emergency_request, profile=user_profile)
@@ -60,25 +56,24 @@ def update_status(request_id):
         new_status = form.status.data
         if new_status in ['On the way', 'Arrived', 'Transporting']:
             emergency_request.status = new_status
-            # Nếu trạng thái mới là 'Arrived', cập nhật trạng thái xe cứu thương thành 'Available'
+            # If the new status is 'Arrived', update the ambulance's status to 'Available'
             if new_status == 'Arrived':
                 if emergency_request.ambulance:
                     ambulance = emergency_request.ambulance
                     ambulance.status = 'Available'
             db.session.commit()
 
-            # Emit sự kiện 'status_update' tới phòng tương ứng
+            # Emit the 'status_update' event to the corresponding room
             room = f'emergency_{emergency_request.id}'
+            socketio.emit('status_update', {'status': new_status}, room=room)
+            time.sleep(0.1)
             socketio.emit('status_update', {'status': new_status}, room=room)
             flash('Status has been updated.', 'success')
         else:
-            flash('Trạng thái không hợp lệ.', 'danger')
+            flash('Invalid status.', 'danger')
     else:
-        flash('Dữ liệu không hợp lệ.', 'danger')
+        flash('Invalid data.', 'danger')
     return redirect(url_for('emt.emt_dashboard'))
-
-
-
 
 
 @socketio.on('update_location')
@@ -86,51 +81,42 @@ def update_status(request_id):
 @emt_required
 def handle_update_location(data):
     """
-    EMT gửi dữ liệu vị trí thực tế của mình qua SocketIO.
+    EMT sends their real-time location data via SocketIO.
     """
     latitude = data.get('latitude')
     longitude = data.get('longitude')
-    emergency_id = data.get('emergency_id')  # ID của EM đang xử lý
+    emergency_id = data.get('emergency_id')  # ID of the emergency being handled
 
     if not all([latitude, longitude, emergency_id]):
         emit('error', {'message': 'Invalid data.'})
         return
 
-    # Truy xuất EM dựa trên ID
+    # Retrieve the emergency based on the ID
     emergency_request = EmergencyRequest.query.get(emergency_id)
     if emergency_request:
-        # Bạn có thể thêm các trường latitude và longitude vào EmergencyRequest nếu muốn lưu trữ vị trí
-        # emergency_request.latitude = latitude
-        # emergency_request.longitude = longitude
-        # db.session.commit()
 
-        # Gửi dữ liệu vị trí tới các client đang theo dõi EM này
-        print(f"[SERVER] Nhan vi tri cua EMT {current_user.id}: {latitude}, {longitude}")
-        room = f'emergency_{emergency_id}'  # Tạo phòng cho từng EM
+        print(f"[SERVER] Received location from EMT {current_user.id}: {latitude}, {longitude}")
+        room = f'emergency_{emergency_id}'  # Create a room for each emergency
+        emit('location_update', {'latitude': latitude, 'longitude': longitude}, room=room)
+        time.sleep(0.1)
         emit('location_update', {'latitude': latitude, 'longitude': longitude}, room=room)
     else:
-        emit('error', {'message': 'Unauthorized or EM not found.'})
+        emit('error', {'message': 'Unauthorized or emergency not found.'})
 
 
-# Handler cho sự kiện "join_room"
 @socketio.on('join_room')
 @login_required
 def handle_join_room(data):
     """
-    Người dùng gửi yêu cầu tham gia phòng để nhận các sự kiện cập nhật vị trí liên quan.
+    User sends a request to join a room to receive location update events.
     """
     room = data.get('room')
     if not room:
-        emit('error', {'message': 'Phòng không được cung cấp.'})
+        emit('error', {'message': 'Room not provided.'})
         return
 
-    # Bạn có thể thêm logic xác thực phòng nếu cần, ví dụ:
-    # emergency_id = extract_emergency_id_from_room(room)
-    # emergency_request = EmergencyRequest.query.get(emergency_id)
-    # if emergency_request và current_user được phép tham gia phòng này...
-
     join_room(room)
-    emit('joined_room', {'message': f'Bạn đã tham gia phòng {room}.'}, room=request.sid)
+    emit('joined_room', {'message': f'You have joined room {room}.'}, room=request.sid)
 
 
 @emt_bp.route('/join_EM/<int:request_id>', methods=['POST'])
@@ -142,6 +128,6 @@ def join_em(request_id):
 
     db.session.commit()
 
-    # Emit sự kiện 'status_update' tới phòng tương ứng
-    flash('Join Emergency Request successfully! Good Luck!.', 'success')
+    # Emit the 'status_update' event to the corresponding room
+    flash('Successfully joined Emergency Request! Good luck!', 'success')
     return redirect(url_for('emt.emt_dashboard'))

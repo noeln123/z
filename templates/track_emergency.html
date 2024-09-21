@@ -1,4 +1,3 @@
-<!-- templates/track_emergency.html -->
 
 {% extends "base.html" %}
 
@@ -70,7 +69,6 @@
             </div>
             <div class="em-card-body">
                 {% if request %}
-                    <!-- Các trường ẩn để JavaScript sử dụng -->
                     <input type="hidden" id="emergency-id" value="{{ request.id }}">
                     <input type="hidden" id="emergency-status" value="{{ request.status }}">
 
@@ -114,7 +112,6 @@
                             <p class="col-xl-4 col-lg-6"><strong>Ambulance Location:</strong>
                                 {% if ambulance and ambulance.driver %}
                                     {{ ambulance.driver.location }}
-                                    <!-- Thêm bản đồ nếu cần -->
                                 {% else %}
                                     N/A
                                 {% endif %}
@@ -187,15 +184,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js" integrity="sha512-luMnTJZ7oEchNDZAtQhgjomP1eZefnl82ruTH/3Oj/Yu5qYtwL7+dVRccACS/Snp1lFXq188XFipHKYE75IaQQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-        <!-- Thêm Leaflet Routing Machine -->
         <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
-        <!-- Thêm plugin để hỗ trợ OpenRouteService -->
         <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-openrouteservice.js"></script>
         <script src="{{ url_for('static', filename='js/track_emergency.js') }}"></script>
     </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
-    <!-- Bạn có thể thêm các script bổ sung tại đây nếu cần -->
 {% endblock %}

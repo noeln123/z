@@ -1,31 +1,31 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Thêm Tài Xế Mới</h2>
+<h2>Add New Driver</h2>
 <form method="POST">
     {{ form.hidden_tag() }}
     <div class="mb-3">
         {{ form.name.label(class="form-label") }}
-        {{ form.name(class="form-control", placeholder="Nhập tên tài xế") }}
+        {{ form.name(class="form-control", placeholder="Enter driver's name") }}
         {% for error in form.name.errors %}
             <div class="text-danger">{{ error }}</div>
         {% endfor %}
     </div>
     <div class="mb-3">
         {{ form.contact_info.label(class="form-label") }}
-        {{ form.contact_info(class="form-control", placeholder="Nhập thông tin liên lạc") }}
+        {{ form.contact_info(class="form-control", placeholder="Enter contact information") }}
         {% for error in form.contact_info.errors %}
             <div class="text-danger">{{ error }}</div>
         {% endfor %}
     </div>
     <div class="mb-3">
         {{ form.location.label(class="form-label") }}
-        {{ form.location(class="form-control", placeholder="Nhập vị trí hiện tại") }}
+        {{ form.location(class="form-control", placeholder="Enter current location") }}
         {% for error in form.location.errors %}
             <div class="text-danger">{{ error }}</div>
         {% endfor %}
     </div>
-    <button type="submit" class="btn btn-success">Thêm Tài Xế</button>
-    <a href="{{ url_for('admin.manage_drivers') }}" class="btn btn-secondary">Hủy</a>
+    <button type="submit" class="btn btn-success">Add Driver</button>
+    <a href="{{ url_for('admin.manage_drivers') }}" class="btn btn-secondary">Cancel</a>
 </form>
 {% endblock %}

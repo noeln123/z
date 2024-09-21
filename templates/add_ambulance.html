@@ -2,9 +2,8 @@
 
 {% block content %}
 <div class="container-fluid">
-    <h2 class="mb-4">Thêm Xe Cứu Thương Mới</h2>
+    <h2 class="mb-4">Add New Ambulance</h2>
 
-    <!-- Hiển Thị Thông Báo Flash -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -16,13 +15,11 @@
         {% endif %}
     {% endwith %}
 
-    <!-- Mẫu Form Thêm Xe Cứu Thương -->
     <div class="card">
         <div class="card-body">
             <form action="{{ url_for('admin.add_ambulance') }}" method="POST">
                 {{ form.hidden_tag() }}
 
-                <!-- Trường Loại Xe Cứu Thương -->
                 <div class="mb-3">
                     {{ form.ambulance_type.label(class="form-label") }}
                     {{ form.ambulance_type(class="form-select") }}
@@ -35,7 +32,6 @@
                     {% endif %}
                 </div>
 
-                <!-- Trường Kích Cỡ Xe -->
                 <div class="mb-3">
                     {{ form.size.label(class="form-label") }}
                     {{ form.size(class="form-select") }}
@@ -48,7 +44,6 @@
                     {% endif %}
                 </div>
 
-                <!-- Trường Trang Thiết Bị -->
                 <div class="mb-3">
                     {{ form.equipment.label(class="form-label") }}
                     {{ form.equipment(class="form-select") }}
@@ -61,16 +56,15 @@
                     {% endif %}
                 </div>
 
-                <!-- Trường Gán Tài Xế (Không Bắt Buộc) -->
                 <div class="mb-3">
                     {{ form.driver_id.label(class="form-label") }}
                     <select name="{{ form.driver_id.name }}" id="{{ form.driver_id.id }}" class="form-select">
-                        <option value="">-- Chọn Tài Xế  --</option>
+                        <option value="">-- Select Driver --</option>
                         {% for driver in driver_choices %}
                             <option value="{{ driver[0] }}"
                                 {% if not driver[2] %} disabled {% endif %}
                                 {% if form.driver_id.data == driver[0] %} selected {% endif %}>
-                                {{ driver[1] }} {% if not driver[2] %} (Đang lái xe cứu thương) {% endif %}
+                                {{ driver[1] }} {% if not driver[2] %} (Currently driving an ambulance) {% endif %}
                             </option>
                         {% endfor %}
                     </select>
@@ -83,9 +77,8 @@
                     {% endif %}
                 </div>
 
-                <!-- Nút Submit và Hủy Bỏ -->
                 <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
-                <a href="{{ url_for('admin.manage_ambulances') }}" class="btn btn-secondary">Hủy Bỏ</a>
+                <a href="{{ url_for('admin.manage_ambulances') }}" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
     </div>

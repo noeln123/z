@@ -9,15 +9,15 @@
 {% block content %}
 <style>
     .readonly-field {
-        background-color: #e9ecef; /* Màu nền khi readonly */
-        cursor: not-allowed;       /* Con trỏ khi readonly */
+        background-color: #e9ecef; 
+        cursor: not-allowed;      
         pointer-events: none;
         transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
     }
 
     .editable-field {
-        background-color: #ffffff; /* Màu nền khi có thể chỉnh sửa */
-        cursor: text;              /* Con trỏ khi có thể chỉnh sửa */
+        background-color: #ffffff; 
+        cursor: text;             
         pointer-events: auto; 
         transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
     }
@@ -27,7 +27,6 @@
         border-radius: 0.25rem;
         transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
     }
-    /* Thêm hiệu ứng khi focus vào các trường */
     input:focus, select:focus {
         border-color: #80bdff;
         outline: 0;
@@ -115,10 +114,8 @@
                 event.stopPropagation();
             }
 
-            // Thiết lập trạng thái ban đầu khi tải trang
             toggleFields();
 
-            // Gắn sự kiện thay đổi vào trường request_type
             $('#request_type').change(function() {
                 toggleFields();
             });
