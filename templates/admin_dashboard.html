@@ -49,6 +49,24 @@
         </div>
     </div>
     
+
+
+    <!-- Toggle Auto Dispatch -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card p-3">
+                <h5>Auto Dispatch Control</h5>
+                <form action="{{ url_for('admin.toggle_auto_dispatch') }}" method="POST" id="auto-dispatch-form">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="autoDispatchToggle" {% if auto_dispatch == 'True' %}checked{% endif %}>
+                        <label class="form-check-label" for="autoDispatchToggle">Enable Auto Dispatch</label>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Recent Emergency Requests List -->
     <div class="card mb-4">
         <div class="card-header">
@@ -198,4 +216,54 @@
     
     <!-- You can add other sections like statistical charts if needed -->
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Thêm một div để hiển thị thông báo -->
+<div id="notification-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
+
+<!-- Socket.IO Script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js" integrity="sha512-luMnTJZ7oEchNDZAtQhgjomP1eZefnl82ruTH/3Oj/Yu5qYtwL7+dVRccACS/Snp1lFXq188XFipHKYE75IaQQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Khởi tạo Socket.IO connection
+        const socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port, { path: '/socket.io' });
+
+
+        // Hàm hiển thị thông báo
+        function showNotification(message) {
+            const container = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.innerHTML = `
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            container.appendChild(notification);
+
+            // Tự động đóng sau 5 giây
+            setTimeout(() => {
+                const alert = bootstrap.Alert.getOrCreateInstance(notification.querySelector('.alert'));
+                alert.close();
+            }, 5000);
+        }
+        
+        // Lắng nghe sự kiện thay đổi trên toggle
+        const autoDispatchToggle = document.getElementById('autoDispatchToggle');
+        autoDispatchToggle.addEventListener('change', () => {
+            document.getElementById('auto-dispatch-form').submit();
+        });
+
+        // Lắng nghe sự kiện 'auto_dispatch_toggled' để cập nhật trạng thái nút toggle
+        socket.on('auto_dispatch_toggled', (data) => {
+            const autoDispatchToggle = document.getElementById('autoDispatchToggle');
+            if (data.status === 'True') {
+                autoDispatchToggle.checked = true;
+                showNotification("Auto Dispatch has been <span style='color: green;'>enabled</span>.");
+            } else {
+                autoDispatchToggle.checked = false;
+                showNotification("Auto Dispatch has been <span style='color: red;'>disabled</span>.");
+            }
+        });
+    });
+</script>
 {% endblock %}

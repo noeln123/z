@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div id="notification-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
+
 <h2>EMT Dashboard</h2>
 <input type="hidden" id="joined" value="{{ joined }}">
+<input type="hidden" id="userid" value="{{ current_user.id }}">
 <div class="table-responsive">
-    <table class="table table-striped table-bordered align-middle">
+    <table class="table table-striped table-bordered align-middle" id="emergency-table">
         <thead class="table-dark">
             <tr>
                 <th>Request ID</th> 
@@ -14,13 +17,12 @@
                 <th>Pickup Address</th>
                 <th>Request Type</th>
                 <th>Status</th>
-                <th>Ambulance</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
             {% for request in emergency_requests %}
-            <tr>
+            <tr id="request-{{ request.id }}">
                 <td>{{ request.id }}</td>
                 <td>{{ request.hospital_name }}</td>
                 <td>{{ request.hospital_address }}</td>
@@ -40,14 +42,6 @@
                         <span class="badge bg-secondary">Transporting</span>
                     {% else %}
                         <span class="badge bg-dark">{{ request.status }}</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if request.ambulance %}
-                        <strong>{{ request.ambulance.ambulance_type }}</strong><br>
-                        {{ request.ambulance.driver.name }}
-                    {% else %}
-                        <span class="text-muted">Not assigned</span>
                     {% endif %}
                 </td>
                 <td>
@@ -88,17 +82,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js" integrity="sha512-luMnTJZ7oEchNDZAtQhgjomP1eZefnl82ruTH/3Oj/Yu5qYtwL7+dVRccACS/Snp1lFXq188XFipHKYE75IaQQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const emergencyId = document.getElementById('emergency_id').value;
+            const socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
             const joined = document.getElementById('joined').value;
             if (joined !== "False") {
+                const emergencyId = document.getElementById('emergency_id').value;
                 if (navigator.geolocation) {
                     navigator.geolocation.watchPosition((position) => {
                         console.log("EM" + emergencyId +": updating your location")
                         const latitude = position.coords.latitude;
                         const longitude = position.coords.longitude;
 
-                        // Connect SocketIO
-                        const socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
                         socket.on('connect', () => {
                             socket.emit('update_location', {
@@ -107,7 +100,6 @@
                                 'emergency_id': emergencyId
                             });
                         });
-
 
                         socket.on('error', (data) => {
                             console.error('Error:', data.message);
@@ -123,6 +115,81 @@
                     alert('Geolocation is not supported by your browser.');
                 }
             }
+
+            let userId = document.getElementById('userid').value;
+            // Tham gia vào phòng tương ứng với userId của EMT
+            socket.on('connect', () => {
+                console.log(`join emt_${userId}_getdispatch`);
+                socket.emit('join_room', { 'room': `emt_${userId}_getdispatch` });
+            });
+
+            // Lắng nghe sự kiện 'dispatch'
+            socket.on('dispatch', (data) => {
+                console.log('Dispatch event received:', data);
+                addEmergencyRequest(data);
+                showNotification("You have been dispatched for an <span style='color: red;'>emergency request</span>.");
+            });
+
+
+            function addEmergencyRequest(data) {
+                const tbody = document.querySelector('#emergency-table tbody');
+
+                // Tạo thẻ tr mới
+                const tr = document.createElement('tr');
+                tr.id = `request-${data.id}`;
+
+                // Tạo các thẻ td và thêm dữ liệu
+                tr.innerHTML = `
+                    <td>${data.id}</td>
+                    <td>${data.hospital_name}</td>
+                    <td>${data.hospital_address}</td>
+                    <td>${data.user_phone}</td>
+                    <td>${data.pickup_address}</td>
+                    <td>${data.request_type}</td>
+                    <td>
+                        <span class="badge bg-info">Dispatched</span>
+                    </td>
+                    <td>
+                        <form action="/emt/join_EM/${data.id}" method="POST" class="d-inline">
+                            <button class="btn btn-info">Join EM</button>
+                        </form>
+                    </td>
+                `;
+
+                // Thêm dòng vào tbody
+                tbody.prepend(tr); // Sử dụng prepend để thêm dòng mới lên trên cùng
+
+                // Cập nhật thông báo "No emergency requests..." nếu có
+                const noDataRow = tbody.querySelector('tr td[colspan="9"]');
+                if (noDataRow) {
+                    noDataRow.parentElement.remove();
+                }
+            }
+
+
+            // Hàm hiển thị thông báo
+            function showNotification(message) {
+                const container = document.getElementById('notification-container');
+                const notification = document.createElement('div');
+                notification.innerHTML = `
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
+                container.appendChild(notification);
+
+                // Tự động đóng sau 5 giây
+                setTimeout(() => {
+                    notification.querySelector('.alert').classList.remove('show');
+                    notification.querySelector('.alert').classList.add('hide');
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 500);
+                }, 5000);
+            }
+
+
         });
     </script>
 {% endblock %}

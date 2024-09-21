@@ -3,6 +3,7 @@ from config import Config
 from extensions import db, login_manager, socketio
 from routers import user_bp, admin_bp, emt_bp
 from flask_migrate import Migrate
+from models import Setting
 
 def create_app():
     app = Flask(__name__)
@@ -27,6 +28,11 @@ def create_app():
     with app.app_context():
         from models import User, Profile, Ambulance, Driver, EmergencyRequest, Feedback
         # db.create_all()  # Chỉ chạy lần đầu hoặc sử dụng Flask-Migrate
+        auto_dispatch = Setting.query.filter_by(key='auto_dispatch').first()
+        if not auto_dispatch:
+            auto_dispatch = Setting(key='auto_dispatch', value='False')
+            db.session.add(auto_dispatch)
+            db.session.commit()
 
     return app
 

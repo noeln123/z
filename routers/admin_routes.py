@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from extensions import db, socketio
-from models import Ambulance, Driver, EmergencyRequest
+from models import Ambulance, Driver, EmergencyRequest, Setting
 from forms import UpdateAmbulanceForm
 from . import admin_bp
 
@@ -39,6 +39,10 @@ def admin_dashboard():
     statuses = ['On the way', 'Transporting']
     active_ambulances = Ambulance.query.join(EmergencyRequest).filter(EmergencyRequest.status.in_(statuses)).all()
     
+    # Lấy cài đặt auto_dispatch
+    auto_dispatch_setting = Setting.query.filter_by(key='auto_dispatch').first()
+    auto_dispatch = auto_dispatch_setting.value if auto_dispatch_setting else 'False'
+
     return render_template('admin_dashboard.html',
                            total_ambulances=total_ambulances,
                            total_drivers=total_drivers,
@@ -49,7 +53,8 @@ def admin_dashboard():
                            arrived_requests=arrived_requests,
                            transporting_requests=transporting_requests,
                            recent_requests=recent_requests,
-                           active_ambulances=active_ambulances)
+                           active_ambulances=active_ambulances,
+                           auto_dispatch=auto_dispatch)
 
 @admin_bp.route('/manage_ambulances', methods=['GET', 'POST'])
 @login_required
@@ -188,7 +193,23 @@ def dispatch_control(request_id):
             room = f'emergency_{emergency_request.id}'
             print(f"admin update {room}")
             socketio.emit('status_update', {'status': emergency_request.status}, room=room)
-            
+
+
+            #Phân phối tới các EMTs phù hợp
+            # room = f"emt_{emt.id}"
+            room = "emt_2_getdispatch"
+            dispatch_data = {
+                'id': emergency_request.id,
+                'hospital_name': emergency_request.hospital_name,
+                'hospital_address': emergency_request.hospital_address,
+                'user_phone': emergency_request.user_phone,
+                'pickup_address': emergency_request.pickup_address,
+                'request_type': emergency_request.request_type,
+                'status': emergency_request.status,
+            }
+            socketio.emit('dispatch', dispatch_data, room=room)
+
+
             flash('Ambulance has been assigned.', 'success')
 
             return redirect(url_for('admin.admin_dashboard'))
@@ -208,4 +229,23 @@ def send_message():
     # Handle sending messages to EMT or users
     # You can use tools like Flask-Mail or integrate an SMS API
     flash('Message has been sent.', 'success')
+    return redirect(url_for('admin.admin_dashboard'))
+
+
+@admin_bp.route('/toggle_auto_dispatch', methods=['POST'])
+@login_required
+@admin_required 
+def toggle_auto_dispatch():
+    print("admin tat autoooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
+    setting = Setting.query.filter_by(key='auto_dispatch').first()
+    if setting.value == 'True':
+        setting.value = 'False'
+        flash('Auto Dispatch has been turned OFF.', 'warning')
+    else:
+        setting.value = 'True'
+        flash('Auto Dispatch has been turned ON.', 'success')
+    
+    db.session.commit()
+    
+    
     return redirect(url_for('admin.admin_dashboard'))

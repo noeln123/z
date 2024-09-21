@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Quản lý tài xế</h2>
-<a href="{{ url_for('admin.add_driver') }}">Thêm tài xế mới</a>
+<h2>Driver Management</h2>
+<a href="{{ url_for('admin.add_driver') }}">Add New Driver</a>
 <table>
     <thead>
         <tr>
             <th>ID</th>
-            <th>Tên</th>
-            <th>Thông tin liên lạc</th>
-            <th>Vị trí</th>
-            <th>Hành động</th>
+            <th>Name</th>
+            <th>Contact Information</th>
+            <th>Location</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -21,9 +21,9 @@
                 <td>{{ driver.contact_info }}</td>
                 <td>{{ driver.location }}</td>
                 <td>
-                    <a href="{{ url_for('admin.edit_driver', driver_id=driver.id) }}">Sửa</a>
+                    <a href="{{ url_for('admin.edit_driver', driver_id=driver.id) }}">Edit</a>
                     <form action="{{ url_for('admin.delete_driver', driver_id=driver.id) }}" method="POST" style="display:inline;">
-                        <button type="submit" onclick="return confirm('Bạn có chắc chắn muốn xóa tài xế này?');">Xóa</button>
+                        <button type="submit" onclick="return confirm('Are you sure you want to delete this driver?');">Delete</button>
                     </form>
                 </td>
             </tr>
