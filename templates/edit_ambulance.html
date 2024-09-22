@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Sửa Thông Tin Xe Cứu Thương</h2>
+<h2>Update ambulance information</h2>
 <form method="POST">
     {{ form.hidden_tag() }}
     <div class="form-group">
@@ -33,7 +33,7 @@
         {% endfor %}
     </div>
     <br>
-    <button type="submit" class="btn btn-primary">Cập Nhật</button>
+    <button type="submit" class="btn btn-primary">Update</button>
     <a href="{{ url_for('admin.manage_ambulances') }}" class="btn btn-secondary">Hủy</a>
 </form>
 {% endblock %}

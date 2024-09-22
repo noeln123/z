@@ -4,6 +4,7 @@ from extensions import db, socketio
 from models import User, Profile, EmergencyRequest, Feedback, ContactMessage, Driver, Ambulance, Setting
 from forms import RegistrationForm, LoginForm, EmergencyRequestForm, FeedbackForm, ProfileForm, ContactForm, CancelEmergencyForm
 from . import user_bp 
+import time
 
 @user_bp.route('/')
 def home():
@@ -233,7 +234,7 @@ def dispatch_emergency_request(emergency_request):
         room = f'emergency_{emergency_request.id}'
         print(f"admin update {room}")
         socketio.emit('status_update', {'status': emergency_request.status}, room=room)
-        time.sleep(0.1)
+        time.sleep(0.2)
         socketio.emit('status_update', {'status': emergency_request.status}, room=room)
 
 

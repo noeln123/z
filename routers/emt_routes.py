@@ -66,7 +66,7 @@ def update_status(request_id):
             # Emit the 'status_update' event to the corresponding room
             room = f'emergency_{emergency_request.id}'
             socketio.emit('status_update', {'status': new_status}, room=room)
-            time.sleep(0.1)
+            time.sleep(0.2)
             socketio.emit('status_update', {'status': new_status}, room=room)
             flash('Status has been updated.', 'success')
         else:
@@ -98,7 +98,7 @@ def handle_update_location(data):
         print(f"[SERVER] Received location from EMT {current_user.id}: {latitude}, {longitude}")
         room = f'emergency_{emergency_id}'  # Create a room for each emergency
         emit('location_update', {'latitude': latitude, 'longitude': longitude}, room=room)
-        time.sleep(0.1)
+        time.sleep(0.2)
         emit('location_update', {'latitude': latitude, 'longitude': longitude}, room=room)
     else:
         emit('error', {'message': 'Unauthorized or emergency not found.'})

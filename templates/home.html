@@ -106,6 +106,33 @@
                 <div class="menu-card-btn">Send Feedback</div>
             </a>
         </div>
+
+        <div class="col-lg-4">
+            <a class="menu-card mb-4" href="{{ url_for('user.driver_list') }}">
+                <div class="menu-card-img">
+                    <img src="{{ url_for('static', filename='images/driver.png') }}" class="menu-card-image" alt="Feedback" style="width: 50%;">
+                </div>
+                <div class="menu-card-body">
+                    <h5 class="menu-card-title">Ambulance Drivers</h5>
+                    <p class="menu-card-text">Our team of highly trained ambulance drivers is committed to providing safe and efficient transportation when you need it most.</p>
+                </div>
+                <div class="menu-card-btn">Send Feedback</div>
+            </a>
+        </div>
+        <div class="col-lg-4">
+            <a class="menu-card mb-4" href="{{ url_for('user.ambulance_types') }}">
+                <div class="menu-card-img">
+                    <img src="{{ url_for('static', filename='images/ambulance.png') }}" class="menu-card-image" alt="Feedback" style="width: 80%;">
+                </div>
+                <div class="menu-card-body">
+                    <h5 class="menu-card-title">Our Ambulances</h5>
+                    <p class="menu-card-text">Explore our fleet of fully equipped ambulances, ready to provide fast and reliable emergency transport services.</p>
+                </div>
+                <div class="menu-card-btn">Send Feedback</div>
+            </a>
+        </div>
+
+
     </div>
 </div>
 {% endblock %}

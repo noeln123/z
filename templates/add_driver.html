@@ -1,31 +1,62 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Add New Driver</h2>
-<form method="POST">
-    {{ form.hidden_tag() }}
-    <div class="mb-3">
-        {{ form.name.label(class="form-label") }}
-        {{ form.name(class="form-control", placeholder="Enter driver's name") }}
-        {% for error in form.name.errors %}
-            <div class="text-danger">{{ error }}</div>
-        {% endfor %}
-    </div>
-    <div class="mb-3">
-        {{ form.contact_info.label(class="form-label") }}
-        {{ form.contact_info(class="form-control", placeholder="Enter contact information") }}
-        {% for error in form.contact_info.errors %}
-            <div class="text-danger">{{ error }}</div>
-        {% endfor %}
-    </div>
-    <div class="mb-3">
-        {{ form.location.label(class="form-label") }}
-        {{ form.location(class="form-control", placeholder="Enter current location") }}
-        {% for error in form.location.errors %}
-            <div class="text-danger">{{ error }}</div>
-        {% endfor %}
-    </div>
-    <button type="submit" class="btn btn-success">Add Driver</button>
-    <a href="{{ url_for('admin.manage_drivers') }}" class="btn btn-secondary">Cancel</a>
-</form>
+<div class="container my-4">
+    <h2 class="text-center mb-4">Add New Driver</h2>
+    <form method="POST" class="needs-validation" novalidate>
+        {{ form.hidden_tag() }}
+        
+        <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control", placeholder="Enter driver's name", required=True) }}
+            {% for error in form.name.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-3">
+            {{ form.contact_info.label(class="form-label") }}
+            {{ form.contact_info(class="form-control", placeholder="Enter contact information", required=True) }}
+            {% for error in form.contact_info.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-3">
+            {{ form.location.label(class="form-label") }}
+            {{ form.location(class="form-control", placeholder="Enter current location", required=True) }}
+            {% for error in form.location.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-success">Add Driver</button>
+            <a href="{{ url_for('admin.manage_drivers') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Example of client-side validation using Bootstrap validation classes
+    (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission if validation fails
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })();
+</script>
 {% endblock %}

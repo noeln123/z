@@ -186,7 +186,7 @@ def dispatch_control(request_id):
             room = f'emergency_{emergency_request.id}'
             print(f"admin update {room}")
             socketio.emit('status_update', {'status': emergency_request.status}, room=room)
-            time.sleep(0.1)
+            time.sleep(0.2)
             socketio.emit('status_update', {'status': emergency_request.status}, room=room)
 
 
@@ -203,7 +203,8 @@ def dispatch_control(request_id):
                 'status': emergency_request.status,
             }
             socketio.emit('dispatch', dispatch_data, room=room)
-
+            time.sleep(0.2)
+            socketio.emit('dispatch', dispatch_data, room=room)
 
             flash('Ambulance has been assigned.', 'success')
 

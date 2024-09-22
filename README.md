@@ -17,7 +17,7 @@ Rapid Rescue is a web application that allows users to quickly request ambulance
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/yourusername/z.git
+    git clone https://github.com/noeln123/z.git
     cd rapid_rescue
     ```
 
